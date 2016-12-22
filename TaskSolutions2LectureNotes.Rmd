@@ -1,0 +1,481 @@
+---
+title: "Task Solution Chapter 3"
+author: "Witold Wolski"
+date: "December 3, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Task 1
+
+NO Idea where to start.
+
+verify formula for $var(Y)$
+
+$$
+var(Y) = \frac{\phi}{w} b''(\theta)
+$$
+
+For mean:
+
+$$
+\begin{aligned}
+0 &= E(\frac{\partial l}{ \partial \theta})\\
+&= E(\frac{y-b'(\theta)}{\phi / w}) = w/\phi E(y-b'(\theta)) = w/\phi(E(y) - b'(\theta))\\
+&\rightarrow E(Y) =  b'(\theta)
+\end{aligned}
+$$
+
+
+According to Result 2 on page 64 
+
+with:
+
+$$
+l(\theta, \phi, y) = \frac{y\theta- b(\theta)}{\phi/w} + c(y,\phi)
+$$
+
+
+$$
+\begin{aligned}
+-E(\frac{\partial^2 l }{\partial \theta^2}) &= E(\frac{\partial l}{\partial \theta}^2)\\
+-E(-wb''(\theta)/\phi) &= E((\frac{y-b'(\theta)}{\phi / w})^2) = (w/\phi)^2 E((y-E(Y))^2)\\
+\frac{\phi}{w} b''(\theta) &= Var(Y)
+\end{aligned}
+$$
+
+## Task 2
+
+Use equations (3.8) and (3.9) to verify the entries in the table above.
+
+Equation (3.8) is:
+$$
+\mu = E(Y) = b'(\theta)
+$$
+
+Equation (3.9) is:
+
+$$
+var(Y) = \frac{\phi}{w} b''(\theta)
+$$
+
+### i
+
+For normal distribution:
+$$
+b(\theta) = \theta^2/2 \rightarrow b'(\theta) = \theta \rightarrow b''(\theta) = 1
+$$
+
+### ii
+
+For Poisson distribution
+
+$$
+b(\theta) = e^\theta \rightarrow b'(\theta) = e^\theta \rightarrow b''(\theta) = e^\theta
+$$
+
+### iii
+For Binomial
+
+
+
+$$
+b(\theta)  = \log(1 + e^\theta) \rightarrow b'(\theta) = \frac{e^\theta}{1+e^\theta} 
+\rightarrow b''(\theta) = \frac{e^\theta}{e^\theta + 1} - \frac{e^{2\theta}}{(e^\theta + 1)^2}
+$$
+
+Need to check how to differentiate this.
+
+### iv
+
+For Gamma
+$$
+b(\theta) = -log(-theta) \rightarrow b'(\theta) = +1/\theta \rightarrow b''(\theta) = 1/\theta^2 =
+(-1\theta)^2 = \mu^2
+$$
+
+
+
+
+# Task 3
+
+Task 3 Verify the canonical links for the Normal, Binomial, Poisson and Gamma.
+
+The link function $g$ for which $\theta_i = x^T_i\beta$
+(that is, for which $g = (b')^{-1}$ is called the canonical link.
+
+Hence, the task is to find the inverse of $g=(b')^{-1}$.
+
+### for Normal
+$$
+b'(\theta) = \theta \rightarrow \theta = g(\mu) = 1(\mu)
+$$
+
+### for Poisson
+
+$$
+b'(\theta) = e^\theta \rightarrow \mu = e^\theta \rightarrow \theta = \log(\mu)
+$$
+
+### for Binomial
+
+$$
+b'(\theta) = log(1+e^\theta) \rightarrow \mu = log(1+e^\theta) \rightarrow \theta =  \log(\mu_i /(1 - \mu_i ))
+$$
+
+
+### For Gamma
+
+$$
+b'(\theta) = -1/\theta \rightarrow \mu = -1/\theta \rightarrow \theta = g(\mu) = -1/\mu
+$$
+
+
+# Task 4
+
+For the canonical link (see, in particular, equation (3.10)) show that
+
+$$
+\sum w_i y_i \frac{\partial \theta}{\partial \beta} = \sum w_i \frac{\partial b(\theta)}{\partial \beta}
+$$
+
+$$
+\begin{aligned}
+\frac{\partial^2 l}{\partial \beta_j \partial \beta_k} &= \\
+&= \frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - b(\theta_i)] \}) \\
+&= \frac{1}{\phi} \sum_i \{-x_{ij}w_ih'(x^T_i\beta)x_{ik}\}
+\end{aligned}
+$$
+
+Hint :
+
+$$
+b'(\theta) = h(x^T \beta) \rightarrow b(\theta) = \int h(x^T\beta) + C
+$$
+
+than:
+
+
+$$
+\begin{aligned}
+&=\frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - b(\theta_i)] \}) \\
+&=\frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - (\int h(x^T\beta) + C)] \})
+\end{aligned}
+$$
+
+
+# Task 5
+
+Show that, for the maximal model, $y_i$ is the maximum likelihood estimate of $\mu_i$. 
+(Hint: the likelihood equation for $\theta_i$ is $y_i = b'(\theta_i)$, and we already know that $b'(\theta_i) = \mu_i$ .)
+
+
+
+$$
+y_i = b'(\theta_i) = \mu_i
+$$
+
+
+$$
+\begin{aligned}
+l(\mu;y,\phi) &= \sum_i{\frac{y_i\theta - b(\theta)}{\phi/w_i}} + c(y,\phi)\\
+\partial l / \partial \theta_i &= w_i /\phi \{y_i - b'(\theta_i)\} = 0\\
+\rightarrow y_i &= b'(\theta_i) = \mu_i
+\end{aligned}
+$$
+
+<!---->
+
+The model that allows the mean of each observation to be a separate parameter is called the
+\textbf{full} or \textbf{saturated} or maximal model.
+
+The maximum possible value of $L$ as the components of $\mu$ vary without any restrictions (or, essentially equivalently, when there is an element of $\beta$ for each observation, so that $\mu^\diamond_i  = h(\eta i ) = h(\beta i )$ occurs when $\mu^\diamond_i = y_i$, hence $\mu^\diamond_i = y_i$ for all $i$.
+
+
+# Task 6
+Deviances for common distributions.
+
+
+Confirm results in table these using the table in 3.3.4 and equation (3.12).
+
+Eq $3.12$ is:
+
+$$
+D(y,\hat{\mu}) = \phi S(y,\hat{\mu}) = 2 \sum_i w_i [y_i(\hat{\theta^\diamond_i} - \hat{\theta_i}) - 
+b(\hat{\theta^\diamond_i}) + b(\hat{\theta_i})]
+$$
+
+### For Normal
+
+$\hat{\theta^\diamond} = y_i$ and $\hat{\theta} = \mu$; $b(\theta) = \theta^2/2$ than
+$b(\hat{\theta^\diamond}) = y_i^2/2$ and $b(\hat{\theta}) = \mu^2/2$; and $w_i = 1$.
+
+
+$$
+\begin{aligned}
+2 \sum_i  [y_i(y_i -\mu) -  y_i^2/2 + \mu^2/2]\\
+&= 2 \sum_i  [y_i^2 - y_i\mu -  y_i^2/2 + \mu^2/2]\\
+&=  \sum_i  [y_i^2 - 2y_i\mu+ \mu^2]\\
+&= \sum_i (y_i - \mu)^2
+\end{aligned}
+$$
+
+### For Poisson
+
+$\mu = e^\theta \rightarrow \theta=\log(\mu)$.
+Than
+
+$\hat{\theta} = \log(\mu)$ and $\hat{\theta^\diamond} = \log{y_i}$; $b(\theta) = e^\theta$ than
+
+
+$b(\hat{\theta^\diamond}) = e^{\log(y_i)} = y_i$ and $b(\hat{\theta}) = e^{\log(\mu)} = \mu$ and
+$\phi = 1$, $w_i = 1$
+
+
+$$
+2\sum_i\{ y_i(\log(y_i) - \log(\mu)) - y_i + \mu \} = 2\sum_i\{ y_i\log(y_i/\mu) - y_i + \mu \}
+$$
+
+## For Binomial
+
+
+
+# Task 7
+
+Use the results in 3.6.4 to obtain simple expressions for the null deviances for Poisson
+(weights must be one) and Gamma (assume weights are one).
+
+If $W = \sum w_i$
+$$
+\mu = \sum w_i y_i / W
+$$
+
+For Poisson and Gamma model $w_i =1$, than $\mu = 1/N \sum y_i$
+
+### For Poison
+
+$$
+\begin{aligned}
+2\sum y_i \log(y_i/\hat{\mu}_i) - (y_i - \hat{\mu}_i) &=\\ 
+&= 2\sum (y_i \log(\frac{y_i}{1/N \sum y_i}) - (y_i - 1/N \sum y_i)) \\
+&= 2\sum (y_i \log(y_i) - \log(1/N \sum y_i) - (y_i) + (1/N \sum y_i))\\
+&=2\sum y_i (\log(y_i) - \log(1/N \sum y_i))
+\end{aligned}
+$$
+
+### For Gamma
+
+Similarily
+
+# Task 8
+
+For the Poisson distribution, verify that $D$ and $\chi^2$ are asymptotically equivalent. (Hint:
+use that for small $|x - y|, xlog(x/y) \approx (x - y) + (x - y)^2 /(2y)$.)
+
+$$
+\chi^2 = \sum e^2_{P,i} = \sum (\sqrt{w_i} \frac{y_i - \hat{\mu}_i}{\sqrt{V(\hat{\mu}_i)}})^2
+$$
+
+for Poisson $w_i = 1$ and $Var(Y_i) = \frac{\phi}{w_i}V(\mu_i) = \frac{\phi}{w_i}b''(\theta)$ and 
+$b''(\theta) = V(\mu_i) = \mu$,
+
+than:
+
+$$
+\chi^2 = \sum e^2_{P,i} = \sum (\frac{y_i - \hat{\mu}_i}{\sqrt{\mu_i}})^2
+$$
+
+$$
+\begin{aligned}
+D(y_i,\mu_i)=2\sum y_i \log(y_i/\hat{\mu}_i) - (y_i - \hat{\mu}_i) &=\\
+&= 2\sum (y_i - \hat{\mu}_i) + (y_i - \hat{\mu}_i)^2 /(2\hat{\mu_i}) - (y_i - \hat{\mu}_i) &=\\
+&= \sum((y_i - \hat{\mu}_i)^2 /\hat{\mu_i})
+\end{aligned}
+$$
+
+
+<!--2\sum y_i \log(y_i/\hat{\mu}_i) - (y_i - \hat{\mu}_i) -->
+
+# Task 9
+
+Obtain the form of the \textbf{Pearson residual} for the Binomial, Poisson and Gamma. (These
+are given in Chapters 4 and 5)
+
+
+### For Binomial
+
+$$
+Var(\mu_i) =  \phi/w_i b''(\theta) = (1/n) \mu(1-\mu)
+$$
+
+than
+
+$$
+e_{p,i} = \frac{y_i - \mu_i}{Var(\mu_i)} \stackrel{with 1}{=} \frac{y_i - \mu_i}{\mu_i(1-\mu_i)/n_i}
+$$
+
+### For Poisson
+
+$$
+Var(\mu_i) = \phi/w_i b''(\theta) = (1/1) \mu
+$$
+
+than
+
+$$
+e_{p,i} = \frac{y_i - \mu_i}{\mu_i}
+$$
+
+
+### For Gamma
+
+$$
+Var(\mu_i) = \phi/w_i b''(\theta) = (\phi/1) \mu^2
+$$
+
+than
+
+$$
+e_{p,i} = \frac{y_i - \mu_i}{\phi \mu_i^2}
+$$
+
+
+# Task 10 
+
+- How does a GLM with identity link relate to a linear model?
+
+It's the same as a linear model.
+
+- Under which situations does it make sense to fit a linear model instead of a GLM with identity link?
+
+The response $y$ is continous and normally distributed. 
+
+
+# Task 11
+
+Confirm that:
+
+$$
+\sum e^2_{P,i} = \sum\{ \frac{[s_i -n_i \hat{\mu_i}]^2}{n_i\hat{\mu_i}} + \frac{[(n_i-s_i) - n_i (1-\hat{\mu_i})]^2}{n_i(1-\hat{\mu_i)}}\}
+$$
+
+With
+
+$$
+e_{P,i} = \frac{y_i - \hat{\mu_i}}{\sqrt{\hat{\mu_i}(1-\hat{\mu_i})/n_i}}
+$$
+
+
+and 
+
+$$
+\chi^2 = \sum e^2_{P,i}
+$$
+
+
+# 4.4.1 Model building for the beetle data
+
+```{r}
+getwd()
+
+load("data/MAS367-GLMs.RData", envir = e <- new.env())
+grep("beetle",names(e))
+```
+
+## Fitting minimal model
+
+```{r}
+
+beetle<-e$beetle
+lapply(beetle,class)
+head(beetle)
+null.glm <- glm(propn.dead ~ 1, family=binomial(logit), weights=number, data=beetle)
+null.glm
+```
+
+## ADding a log concentration term
+
+```{r}
+linear.glm <- glm(propn.dead~1+conc, binomial(logit), weights = number, data=beetle)
+summary(linear.glm)
+```
+
+Example of computing $\chi^2$ values in R.
+
+```{r}
+sum(residuals(linear.glm, type = "pearson")^2)
+```
+
+## Numbers from point 3: Analysis of deviance in nested models
+
+```{r}
+null.glm$deviance
+linear.glm$deviance
+null.glm$deviance - linear.glm$deviance
+qchisq(0.95,1)
+```
+
+##  Is fit acceptable ?
+
+```{r}
+qchisq(0.95,6)
+```
+
+## Plotting Pearson (?) residuals  against predicted values
+
+```{r}
+plot(linear.glm,which = 1)
+
+```
+
+## Fitting quadratic model
+
+
+```{r}
+quad.glm <- glm(propn.dead ~ 1 +conc+ I(conc^2), binomial(logit), weights= number, data= beetle)
+quad.glm
+```
+
+## Change in deviance
+
+```{r}
+linear.glm$deviance - quad.glm$deviance 
+qchisq(0.95,1)
+qchisq(0.95,5)
+plot(quad.glm,which = 1)
+
+```
+
+
+## 10 Wald t-test
+
+```{r}
+summary(quad.glm)
+
+2*pnorm(-156.41/57.86)
+```
+
+# 4.4.2
+
+```{r}
+anova(linear.glm, quad.glm,test="Chi")
+```
+
+# 4.4.3
+
+$AIC = -2l + 2p$
+
+$\frac{l_min - l_mod}{l_min}$
+```{r}
+quad.glm$aic
+l_mod<-length(quad.glm$coefficients) - 0.5*quad.glm$aic
+l_min<-length(null.glm$coefficients) - 0.5*null.glm$aic
+(l_min-l_mod)/l_min
+```
+
+# 4.4.4
+
+
