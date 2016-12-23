@@ -1,0 +1,262 @@
+---
+title: "R Code For Lecture Notes Examples"
+author: "Witold Wolski"
+date: "December 23, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+# 4.4.1 Model building for the beetle data
+
+```{r}
+getwd()
+
+load("data/MAS367-GLMs.RData", envir = e <- new.env())
+grep("beetle",names(e))
+```
+
+## Fitting minimal model
+
+```{r}
+
+beetle<-e$beetle
+lapply(beetle,class)
+head(beetle)
+null.glm <- glm(propn.dead ~ 1, family=binomial(logit), weights=number, data=beetle)
+null.glm
+```
+
+## Adding a log concentration term
+
+```{r}
+linear.glm <- glm(propn.dead~1+conc, binomial(logit), weights = number, data=beetle)
+summary(linear.glm)
+```
+
+Example of computing $\chi^2$ values in R.
+
+```{r}
+sum(residuals(linear.glm, type = "pearson")^2)
+```
+
+## Numbers from point 3: Analysis of deviance in nested models
+
+```{r}
+null.glm$deviance
+linear.glm$deviance
+null.glm$deviance - linear.glm$deviance
+qchisq(0.95,1)
+```
+
+##  Is fit acceptable ?
+
+```{r}
+qchisq(0.95,6)
+```
+
+## Plotting Pearson (?) residuals  against predicted values
+
+```{r}
+plot(linear.glm,which = 1)
+
+```
+
+## Fitting quadratic model
+
+
+```{r}
+quad.glm <- glm(propn.dead ~ 1 +conc+ I(conc^2), binomial(logit), weights= number, data= beetle)
+quad.glm
+```
+
+## Change in deviance
+
+```{r}
+linear.glm$deviance - quad.glm$deviance 
+qchisq(0.95,1)
+qchisq(0.95,5)
+plot(quad.glm,which = 1)
+
+```
+
+
+## 10 Wald t-test
+
+```{r}
+summary(quad.glm)
+
+2*pnorm(-156.41/57.86)
+```
+
+# 4.4.2
+
+```{r}
+anova(linear.glm, quad.glm,test="Chi")
+```
+
+# 4.4.3
+
+$AIC = -2l + 2p$
+
+$\frac{l_min - l_mod}{l_min}$
+```{r}
+quad.glm$aic
+l_mod<-length(quad.glm$coefficients) - 0.5*quad.glm$aic
+l_min<-length(null.glm$coefficients) - 0.5*null.glm$aic
+(l_min-l_mod)/l_min
+```
+
+# 4.4.4 Calculating residuals for the beetle quadratic model
+
+```{r}
+residuals(quad.glm,type = "pearson")
+
+y=beetle$propn.dead
+fitted = quad.glm$fitted
+n = beetle$number
+```
+
+Lets define function:
+
+```{r}
+pearson_resid <- function(y, fitted, n){
+  (y-fitted)/sqrt(fitted * (1-fitted)/n)
+}
+```
+and run it:
+
+```{r}
+pearson_resid(y, fitted, n)
+```
+
+Other residuals are available:
+
+Def function to compute $d_i$ deviance residuals:
+
+```{r}
+d_i_deviance <- function(y, fitted, n){
+  sign(y- fitted)*sqrt(-2*n*(y*log(fitted/y)+(1-y)*log((1-fitted)/(1-y+0.0000001))))
+}
+
+d_i_deviance(y, fitted, n)
+```
+
+compare with r computed values
+
+```{r}
+residuals(quad.glm,type="deviance")
+```
+
+# Task 12
+
+```{r}
+residuals(linear.glm, "pearson")[1]
+residuals(linear.glm, "deviance")[1]
+
+linear.glm$fitted.values[1]
+pearson_resid(linear.glm$y, linear.glm$fitted.values, linear.glm$prior.weights)
+d_i_deviance(linear.glm$y, linear.glm$fitted.values, linear.glm$prior.weights)
+
+```
+
+# 4.4.5 Example 2 of model building : plant anthers
+
+
+```{r}
+anthers <- e$anthers
+```
+
+# 1 
+
+```{r}
+
+head(anthers)
+
+anthers$p <- anthers$obtained/anthers$prepared
+
+library(ggplot2)
+
+ggplot(anthers, aes(force,p), colour= group) + geom_point()
+
+
+```
+
+## 2 consider logit link
+
+```{r}
+logit_link <- function(s,n){
+  y <- (s + 1/2)/(n+1)
+  log(y/(1-y))
+}
+
+```
+
+```{r}
+plot(log(anthers$force),logit_link(anthers$obtained,anthers$prepared))
+```
+
+## Minimal Model
+
+```{r}
+glm.0 <-glm(p ~ 1, weights = prepared, data = anthers, binomial(logit))
+summary(glm.0)
+
+```
+
+## Model 1 
+
+$\eta = \alpha$. Dobson is refernced, to make the lecture notes more confusing model 1 in dobson is model 3 in notes.
+
+```{r}
+anthers$p <- anthers$obtained/anthers$prepared
+anthers$logForce <- log(anthers$force)
+glm.1 <-glm(p ~ group, weights = prepared, data = anthers, family = binomial(logit))
+summary(glm.1)
+summary.lm(glm.1)
+
+```
+
+## Model 2
+
+```{r}
+anthers$p <- anthers$obtained/anthers$prepared
+anthers$logForce <- log(anthers$force)
+glm.2 <-glm(p ~ group + logForce, weights = prepared, data = anthers, family = binomial(logit))
+summary(glm.2)
+summary.lm(glm.2)
+```
+
+## Model 3
+
+```{r}
+lapply(anthers, class)
+glm.3 <-glm(p ~ group * logForce , weights = prepared, data = anthers, family = binomial(logit))
+summary(glm.3)
+
+```
+
+
+# 4.5.1
+
+```{r}
+grain <- e$grain
+plot(grain$x, grain$s/ grain$n)
+
+
+probit_link<- function(s,n){
+  y<-(s+0.5)/(n+1) 
+  (qnorm(y))
+}
+
+plot(grain$x, probit_link(grain$s, grain$n))
+
+```
+
+
+
+

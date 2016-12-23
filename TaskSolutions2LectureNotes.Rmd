@@ -11,15 +11,20 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Task 1
 
-NO Idea where to start.
-
 verify formula for $var(Y)$
 
 $$
 var(Y) = \frac{\phi}{w} b''(\theta)
 $$
 
-For mean:
+
+$$
+l(\theta, \phi, y) = \frac{y\theta- b(\theta)}{\phi/w} + c(y,\phi)
+$$
+
+and using proofs in 3.3.2.
+
+To warm up lets show that the mean is equal to $b'(\theta)$. 
 
 $$
 \begin{aligned}
@@ -34,18 +39,19 @@ According to Result 2 on page 64
 
 with:
 
-$$
-l(\theta, \phi, y) = \frac{y\theta- b(\theta)}{\phi/w} + c(y,\phi)
-$$
-
 
 $$
 \begin{aligned}
 -E(\frac{\partial^2 l }{\partial \theta^2}) &= E(\frac{\partial l}{\partial \theta}^2)\\
--E(-wb''(\theta)/\phi) &= E((\frac{y-b'(\theta)}{\phi / w})^2) = (w/\phi)^2 E((y-E(Y))^2)\\
+-E(-wb''(\theta)/\phi) &= E((\frac{y-b'(\theta)}{\phi / w})^2)\\
+w/\phi E(b''(\theta))  &= (w/\phi)^2 E((y-E(Y))^2)\\
+\phi/w E(b''(\theta)) &= E((y-E(Y))^2)\\
 \frac{\phi}{w} b''(\theta) &= Var(Y)
 \end{aligned}
 $$
+
+whith $Var(Y) = E((y-E(Y))^2)$ and $E(b''(\theta)) = b''(\theta)$ (but this seems quite a stretch). 
+
 
 ## Task 2
 
@@ -138,9 +144,6 @@ $$
 
 For the canonical link (see, in particular, equation (3.10)) show that
 
-$$
-\sum w_i y_i \frac{\partial \theta}{\partial \beta} = \sum w_i \frac{\partial b(\theta)}{\partial \beta}
-$$
 
 $$
 \begin{aligned}
@@ -150,7 +153,14 @@ $$
 \end{aligned}
 $$
 
+
+
 Hint :
+
+$$
+\sum w_i y_i \frac{\partial \theta}{\partial \beta} = \sum w_i \frac{\partial b(\theta)}{\partial \beta}
+$$
+
 
 $$
 b'(\theta) = h(x^T \beta) \rightarrow b(\theta) = \int h(x^T\beta) + C
@@ -180,11 +190,22 @@ $$
 
 
 $$
+l(\mu;y,\phi) = \sum_i{\frac{y_i\theta - b(\theta)}{\phi/w_i}} + c(y,\phi)
+$$
+
+For the maximal model :
+
+$$
 \begin{aligned}
-l(\mu;y,\phi) &= \sum_i{\frac{y_i\theta - b(\theta)}{\phi/w_i}} + c(y,\phi)\\
-\partial l / \partial \theta_i &= w_i /\phi \{y_i - b'(\theta_i)\} = 0\\
+\partial l / \partial \theta_i &= (w_i /\phi) \{y_i - b'(\theta_i)\} = 0\\
 \rightarrow y_i &= b'(\theta_i) = \mu_i
 \end{aligned}
+$$
+
+for other models:
+
+$$
+\partial l / \partial \theta_i = \sum_i (w_i /\phi) \{y_i - b'(\theta_i)\} = 0
 $$
 
 <!---->
@@ -351,7 +372,7 @@ It's the same as a linear model.
 
 - Under which situations does it make sense to fit a linear model instead of a GLM with identity link?
 
-The response $y$ is continous and normally distributed. 
+Almost always when the response $y$ is continous and normally distributed. 
 
 
 # Task 11
@@ -359,123 +380,20 @@ The response $y$ is continous and normally distributed.
 Confirm that:
 
 $$
-\sum e^2_{P,i} = \sum\{ \frac{[s_i -n_i \hat{\mu_i}]^2}{n_i\hat{\mu_i}} + \frac{[(n_i-s_i) - n_i (1-\hat{\mu_i})]^2}{n_i(1-\hat{\mu_i)}}\}
+\chi^2 = \sum e^2_{P,i} = \sum\{ \frac{[s_i -n_i \hat{\mu_i}]^2}{n_i\hat{\mu_i}} + \frac{[(n_i-s_i) - n_i (1-\hat{\mu_i})]^2}{n_i(1-\hat{\mu_i)}}\}
 $$
 
-With
+with
 
 $$
 e_{P,i} = \frac{y_i - \hat{\mu_i}}{\sqrt{\hat{\mu_i}(1-\hat{\mu_i})/n_i}}
 $$
 
+and $s_i = n_iy_i$.
 
-and 
+use:
 
 $$
-\chi^2 = \sum e^2_{P,i}
+\frac{1}{p(1-p)} = \frac{1}{p} + \frac{1}{1-p}
 $$
-
-
-# 4.4.1 Model building for the beetle data
-
-```{r}
-getwd()
-
-load("data/MAS367-GLMs.RData", envir = e <- new.env())
-grep("beetle",names(e))
-```
-
-## Fitting minimal model
-
-```{r}
-
-beetle<-e$beetle
-lapply(beetle,class)
-head(beetle)
-null.glm <- glm(propn.dead ~ 1, family=binomial(logit), weights=number, data=beetle)
-null.glm
-```
-
-## ADding a log concentration term
-
-```{r}
-linear.glm <- glm(propn.dead~1+conc, binomial(logit), weights = number, data=beetle)
-summary(linear.glm)
-```
-
-Example of computing $\chi^2$ values in R.
-
-```{r}
-sum(residuals(linear.glm, type = "pearson")^2)
-```
-
-## Numbers from point 3: Analysis of deviance in nested models
-
-```{r}
-null.glm$deviance
-linear.glm$deviance
-null.glm$deviance - linear.glm$deviance
-qchisq(0.95,1)
-```
-
-##  Is fit acceptable ?
-
-```{r}
-qchisq(0.95,6)
-```
-
-## Plotting Pearson (?) residuals  against predicted values
-
-```{r}
-plot(linear.glm,which = 1)
-
-```
-
-## Fitting quadratic model
-
-
-```{r}
-quad.glm <- glm(propn.dead ~ 1 +conc+ I(conc^2), binomial(logit), weights= number, data= beetle)
-quad.glm
-```
-
-## Change in deviance
-
-```{r}
-linear.glm$deviance - quad.glm$deviance 
-qchisq(0.95,1)
-qchisq(0.95,5)
-plot(quad.glm,which = 1)
-
-```
-
-
-## 10 Wald t-test
-
-```{r}
-summary(quad.glm)
-
-2*pnorm(-156.41/57.86)
-```
-
-# 4.4.2
-
-```{r}
-anova(linear.glm, quad.glm,test="Chi")
-```
-
-# 4.4.3
-
-$AIC = -2l + 2p$
-
-$\frac{l_min - l_mod}{l_min}$
-```{r}
-quad.glm$aic
-l_mod<-length(quad.glm$coefficients) - 0.5*quad.glm$aic
-l_min<-length(null.glm$coefficients) - 0.5*null.glm$aic
-(l_min-l_mod)/l_min
-```
-
-# 4.4.4
-
 
