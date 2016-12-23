@@ -171,10 +171,9 @@ d_i_deviance(linear.glm$y, linear.glm$fitted.values, linear.glm$prior.weights)
 anthers <- e$anthers
 ```
 
-# 1 
+# Plot data 
 
 ```{r}
-
 head(anthers)
 
 anthers$p <- anthers$obtained/anthers$prepared
@@ -182,7 +181,6 @@ anthers$p <- anthers$obtained/anthers$prepared
 library(ggplot2)
 
 ggplot(anthers, aes(force,p), colour= group) + geom_point()
-
 
 ```
 
@@ -239,6 +237,17 @@ glm.3 <-glm(p ~ group * logForce , weights = prepared, data = anthers, family = 
 summary(glm.3)
 
 ```
+
+## Task 13
+
+```{r}
+glm.1 <-glm(p ~ group, weights = prepared, data = anthers, family = binomial(logit))
+glm.1
+glm.2 <-glm(p ~ group + force, weights = prepared, data = anthers, family = binomial(logit))
+glm.2
+```
+
+The conlusions od not change at all. The residual deviances are for both models are rather similar.
 
 
 # 4.5.1
