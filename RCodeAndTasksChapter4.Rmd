@@ -1,5 +1,5 @@
 ---
-title: "R Code For Lecture Notes Examples"
+title: "R Code Chapter 4"
 author: "Witold Wolski"
 date: "December 23, 2016"
 output: html_document
