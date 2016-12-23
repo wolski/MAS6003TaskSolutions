@@ -2,7 +2,7 @@
 title: "Task Solution Chapter 3"
 author: "Witold Wolski"
 date: "December 3, 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
