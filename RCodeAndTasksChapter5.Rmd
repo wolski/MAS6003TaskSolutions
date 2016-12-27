@@ -1,0 +1,22 @@
+---
+title: "RCodeAndTasksChapter5.Rmd"
+author: "Witold Wolski"
+date: "December 27, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Chapter 5 Poisson regression
+
+# 5.1 Introduction
+
+pdf of poisson
+
+$$
+\frac {\lambda ^{k}e^{-\lambda }}{k!}
+$$
+
