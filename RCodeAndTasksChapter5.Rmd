@@ -20,3 +20,51 @@ $$
 \frac {\lambda ^{k}e^{-\lambda }}{k!}
 $$
 
+
+## 1.1 Example : AIDS deaths over time
+
+# 1 plot :
+```{r}
+rm(list=ls())
+load("data/MAS367-GLMs.RData", envir = e <- new.env())
+
+AIDS <- e$AIDS
+par(mfrow=c(1,2))
+plot(AIDS$quarter, AIDS$deaths)
+plot(AIDS$quarter, log(AIDS$deaths+1))
+
+```
+
+# 2 fit poisson with log link
+
+```{r}
+glm.lin <- glm(deaths ~ quarter, data=AIDS, family=poisson(link='log'))
+qchisq(0.95,glm.lin$df.residual)
+
+```
+
+# 3 adding a quadratic term
+
+```{r}
+glm.quad <- glm(deaths ~ quarter + I(quarter^2), data=AIDS, family=poisson(link='log'))
+summary(glm.quad)
+qchisq(0.95,glm.lin$df.residual)
+
+```
+
+# 4 a line predictor on log(x)
+
+
+```{r}
+glm.logline <- glm(deaths ~ I(log(quarter)), data=AIDS, family=poisson(link='log'))
+summary(glm.logline)
+qchisq(0.95,glm.logline$df.residual)
+
+plot(log(AIDS$quarter), log(AIDS$deaths+0.5))
+
+```
+
+# 5
+
+Thus possible simple models are a line in logx or a quadratic in x, but there are reservations
+about both.
