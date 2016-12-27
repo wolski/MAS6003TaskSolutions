@@ -372,6 +372,14 @@ The slope is highly significant.
 ## using quasi (same as subsection 5)
 
 ```{r}
-glq <- glm(p ~ 1 + x , weights = grain$n, data= grain, family=quasi)
-summary(glq)
+glq <- glm(p_star ~ 1 + x , weights = grain$n, data= grain, family=quasi())
+glq$deviance
 ```
+
+Somehow the numbers obtained are not equal to those in the lecture notes (3.62):
+Also trying to run the glm with ```quasi(link = "probit", variance = "constant")```
+does fail.
+
+
+
+
