@@ -381,5 +381,78 @@ Also trying to run the glm with ```quasi(link = "probit", variance = "constant")
 does fail.
 
 
+# 4.6
+
+120 individuals collected as part of a case-control study:
+
+```{r}
+CHD <- e$CHD
+head(CHD)
+```
+
+```{r}
+null.glm<-glm(status~1, family=binomial,data=CHD)
+
+gender.glm<-glm(status~gender,family=binomial,data=CHD)
+summary(gender.glm)
+anova(gender.glm, null.glm,test="Chi")
+```
+
+Odds ratio for being affected by CHD in males compared to females is $e^{\hat{\beta_1}}$:
+
+```{r}
+exp(coefficients(gender.glm)[2])
+```
+
+## 4.6.2 $X_i$ is a factor with 3 levels
+
+```{r}
+head(CHD)
+unique(CHD$sat.fat)
+
+satfat.glm<- glm(status~sat.fat,family=binomial,data=CHD)
+summary(satfat.glm)
+qchisq(0.995,satfat.glm$df.residual)
+anova(satfat.glm, null.glm,test="Chi")
+
+```
+
+## 4.6.3 $X_i$ is continous
+
+```{r}
+head(CHD)
+age.glm<- glm(status~age,family=binomial,data=CHD)
+summary(age.glm)
+qchisq(0.995,age.glm$df.residual)
+qchisq(0.995,1)
+anova(age.glm, null.glm,test="Chi")
+
+```
 
 
+## 4.6.4 Multiple explanatory variables
+
+```{r}
+colnames(CHD)
+gender.glm<-glm(status~gender+age ,family=binomial,data=CHD)
+summary(gender.glm)
+coefficients(gender.glm)[2]
+```
+
+Adjusting for age does not change the estimaged odds ratio `r exp(coefficients(gender.glm)[2])`.
+
+
+## 4.6.5 Computing the confidence interval
+
+```{r}
+qnorm(0.975)
+coef(summary(gender.glm))[, "Std. Error"]
+coefficients(gender.glm)
+
+coefficients(gender.glm) + qnorm(0.975) * coef(summary(gender.glm))[, "Std. Error"]
+coefficients(gender.glm) - qnorm(0.975) * coef(summary(gender.glm))[, "Std. Error"]
+
+exp(0.044707325)
+exp(1.5670292)
+
+```
