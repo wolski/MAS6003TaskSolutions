@@ -2,7 +2,7 @@
 title: "R Code Chapter 4"
 author: "Witold Wolski"
 date: "December 23, 2016"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -456,3 +456,6 @@ exp(0.044707325)
 exp(1.5670292)
 
 ```
+
+
+

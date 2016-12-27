@@ -710,30 +710,216 @@ glq$deviance</code></pre>
 </div>
 <div id="using-quasi-same-as-subsection-5" class="section level2">
 <h2>using quasi (same as subsection 5)</h2>
-<pre class="r"><code>glq &lt;- glm(p ~ 1 + x , weights = grain$n, data= grain, family=quasi)
-summary(glq)</code></pre>
+<pre class="r"><code>glq &lt;- glm(p_star ~ 1 + x , weights = grain$n, data= grain, family=quasi())
+glq$deviance</code></pre>
+<pre><code>## [1] 5.254139</code></pre>
+<p>Somehow the numbers obtained are not equal to those in the lecture notes (3.62): Also trying to run the glm with <code>quasi(link = &quot;probit&quot;, variance = &quot;constant&quot;)</code> does fail.</p>
+</div>
+</div>
+<div id="section-5" class="section level1">
+<h1>4.6</h1>
+<p>120 individuals collected as part of a case-control study:</p>
+<pre class="r"><code>CHD &lt;- e$CHD
+head(CHD)</code></pre>
+<pre><code>##   status sat.fat gender age
+## 1      1       2      1  48
+## 2      1       1      1  58
+## 3      0       0      0  49
+## 4      1       1      0  47
+## 5      0       1      0  46
+## 6      1       2      0  47</code></pre>
+<pre class="r"><code>null.glm&lt;-glm(status~1, family=binomial,data=CHD)
+
+gender.glm&lt;-glm(status~gender,family=binomial,data=CHD)
+summary(gender.glm)</code></pre>
 <pre><code>## 
 ## Call:
-## glm(formula = p ~ 1 + x, family = quasi, data = grain, weights = grain$n)
+## glm(formula = status ~ gender, family = binomial, data = CHD)
 ## 
 ## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.6062  -0.3797   0.0678   0.5438   0.8937  
+##    Min      1Q  Median      3Q     Max  
+## -1.515  -1.163   0.874   0.874   1.192  
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  -0.1104     0.1365  -0.809 0.442130    
-## x             2.6105     0.4700   5.554 0.000538 ***
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept) -0.03509    0.26495  -0.132   0.8946  
+## gender       0.80056    0.37875   2.114   0.0345 *
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## (Dispersion parameter for quasi family taken to be 0.704178)
+## (Dispersion parameter for binomial family taken to be 1)
 ## 
-##     Null deviance: 27.3575  on 9  degrees of freedom
-## Residual deviance:  5.6334  on 8  degrees of freedom
-## AIC: NA
+##     Null deviance: 162.30  on 119  degrees of freedom
+## Residual deviance: 157.74  on 118  degrees of freedom
+## AIC: 161.74
 ## 
-## Number of Fisher Scoring iterations: 2</code></pre>
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>anova(gender.glm, null.glm,test=&quot;Chi&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: status ~ gender
+## Model 2: status ~ 1
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)  
+## 1       118     157.74                       
+## 2       119     162.30 -1  -4.5554  0.03282 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<p>Odds ratio for being affected by CHD in males compared to females is <span class="math inline">\(e^{\hat{\beta_1}}\)</span>:</p>
+<pre class="r"><code>exp(coefficients(gender.glm)[2])</code></pre>
+<pre><code>##   gender 
+## 2.226786</code></pre>
+<div id="x_i-is-a-factor-with-3-levels" class="section level2">
+<h2>4.6.2 <span class="math inline">\(X_i\)</span> is a factor with 3 levels</h2>
+<pre class="r"><code>head(CHD)</code></pre>
+<pre><code>##   status sat.fat gender age
+## 1      1       2      1  48
+## 2      1       1      1  58
+## 3      0       0      0  49
+## 4      1       1      0  47
+## 5      0       1      0  46
+## 6      1       2      0  47</code></pre>
+<pre class="r"><code>unique(CHD$sat.fat)</code></pre>
+<pre><code>## [1] 2 1 0</code></pre>
+<pre class="r"><code>satfat.glm&lt;- glm(status~sat.fat,family=binomial,data=CHD)
+summary(satfat.glm)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = status ~ sat.fat, family = binomial, data = CHD)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.7439  -1.0279   0.7023   0.9909   1.3346  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)   
+## (Intercept)  -0.3623     0.2970  -1.220  0.22251   
+## sat.fat       0.8181     0.2644   3.095  0.00197 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 162.30  on 119  degrees of freedom
+## Residual deviance: 151.86  on 118  degrees of freedom
+## AIC: 155.86
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>qchisq(0.995,satfat.glm$df.residual)</code></pre>
+<pre><code>## [1] 161.3141</code></pre>
+<pre class="r"><code>anova(satfat.glm, null.glm,test=&quot;Chi&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: status ~ sat.fat
+## Model 2: status ~ 1
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)   
+## 1       118     151.86                        
+## 2       119     162.30 -1  -10.438 0.001234 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="x_i-is-continous" class="section level2">
+<h2>4.6.3 <span class="math inline">\(X_i\)</span> is continous</h2>
+<pre class="r"><code>head(CHD)</code></pre>
+<pre><code>##   status sat.fat gender age
+## 1      1       2      1  48
+## 2      1       1      1  58
+## 3      0       0      0  49
+## 4      1       1      0  47
+## 5      0       1      0  46
+## 6      1       2      0  47</code></pre>
+<pre class="r"><code>age.glm&lt;- glm(status~age,family=binomial,data=CHD)
+summary(age.glm)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = status ~ age, family = binomial, data = CHD)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6543  -1.2462   0.8034   1.0269   1.4730  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept) -2.20096    1.11289  -1.978   0.0480 *
+## age          0.05459    0.02340   2.333   0.0196 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 162.30  on 119  degrees of freedom
+## Residual deviance: 156.42  on 118  degrees of freedom
+## AIC: 160.42
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>qchisq(0.995,age.glm$df.residual)</code></pre>
+<pre><code>## [1] 161.3141</code></pre>
+<pre class="r"><code>qchisq(0.995,1)</code></pre>
+<pre><code>## [1] 7.879439</code></pre>
+<pre class="r"><code>anova(age.glm, null.glm,test=&quot;Chi&quot;)</code></pre>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: status ~ age
+## Model 2: status ~ 1
+##   Resid. Df Resid. Dev Df Deviance Pr(&gt;Chi)  
+## 1       118     156.42                       
+## 2       119     162.30 -1  -5.8799  0.01531 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="multiple-explanatory-variables" class="section level2">
+<h2>4.6.4 Multiple explanatory variables</h2>
+<pre class="r"><code>colnames(CHD)</code></pre>
+<pre><code>## [1] &quot;status&quot;  &quot;sat.fat&quot; &quot;gender&quot;  &quot;age&quot;</code></pre>
+<pre class="r"><code>gender.glm&lt;-glm(status~gender+age ,family=binomial,data=CHD)
+summary(gender.glm)</code></pre>
+<pre><code>## 
+## Call:
+## glm(formula = status ~ gender + age, family = binomial, data = CHD)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.8323  -1.1603   0.7256   0.9596   1.5802  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept) -2.59535    1.13704  -2.283   0.0225 *
+## gender       0.80587    0.38835   2.075   0.0380 *
+## age          0.05436    0.02347   2.317   0.0205 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 162.30  on 119  degrees of freedom
+## Residual deviance: 152.03  on 117  degrees of freedom
+## AIC: 158.03
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<pre class="r"><code>coefficients(gender.glm)[2]</code></pre>
+<pre><code>##    gender 
+## 0.8058682</code></pre>
+<p>Adjusting for age does not change the estimaged odds ratio 2.2386393.</p>
+</div>
+<div id="computing-the-confidence-interval" class="section level2">
+<h2>4.6.5 Computing the confidence interval</h2>
+<pre class="r"><code>qnorm(0.975)</code></pre>
+<pre><code>## [1] 1.959964</code></pre>
+<pre class="r"><code>coef(summary(gender.glm))[, &quot;Std. Error&quot;]</code></pre>
+<pre><code>## (Intercept)      gender         age 
+##  1.13704066  0.38835454  0.02346514</code></pre>
+<pre class="r"><code>coefficients(gender.glm)</code></pre>
+<pre><code>## (Intercept)      gender         age 
+## -2.59534522  0.80586824  0.05435797</code></pre>
+<pre class="r"><code>coefficients(gender.glm) + qnorm(0.975) * coef(summary(gender.glm))[, &quot;Std. Error&quot;]</code></pre>
+<pre><code>## (Intercept)      gender         age 
+##  -0.3667865   1.5670292   0.1003488</code></pre>
+<pre class="r"><code>coefficients(gender.glm) - qnorm(0.975) * coef(summary(gender.glm))[, &quot;Std. Error&quot;]</code></pre>
+<pre><code>##  (Intercept)       gender          age 
+## -4.823903955  0.044707325  0.008367151</code></pre>
+<pre class="r"><code>exp(0.044707325)</code></pre>
+<pre><code>## [1] 1.045722</code></pre>
+<pre class="r"><code>exp(1.5670292)</code></pre>
+<pre><code>## [1] 4.79239</code></pre>
 </div>
 </div>
 
