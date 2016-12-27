@@ -2,7 +2,7 @@
 title: "R Code Chapter 4"
 author: "Witold Wolski"
 date: "December 23, 2016"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
@@ -250,11 +250,11 @@ glm.2
 The conlusions od not change at all. The residual deviances are for both models are rather similar.
 
 
-# 4.5.1
+# 4.5.1 (Task 14)
 
 ```{r}
 grain <- e$grain
-plot(grain$x, grain$s/ grain$n)
+
 
 
 probit_link<- function(s,n){
@@ -262,10 +262,116 @@ probit_link<- function(s,n){
   (qnorm(y))
 }
 
+par(mfrow=c(1,2))
+plot(grain$x, grain$s/ grain$n)
 plot(grain$x, probit_link(grain$s, grain$n))
+```
 
+```{r}
+head(grain)
+grain$p_star <- (grain$s + 0.5)/ (grain$n+1)
+grain$p <- (grain$s)/ (grain$n)
 ```
 
 
+## 2 Null deviance
 
+```{r}
+glm(p ~ 1 , weights = grain$n, data= grain, family=binomial(link= 'probit'))
+  
+```
 
+Can reproduce results from script only with p_start. But so far we only fitted models with $p = s/n$. Using `p_star` also produces a warning
+
+```{r}
+#glm(p_star ~ 1 + x , weights = grain$n, data= grain, family=binomial(link= 'probit'))
+glin <- glm(p ~ 1 + x , weights = grain$n, data= grain, family=binomial(link= 'probit'))
+names(glin)
+glin$deviance
+glin$null.deviance
+glin$null.deviance-glin$deviance
+
+```
+
+The change in deviance (94 on 1 df) is clearly very high showing an
+improvement of the model with a linear term over the null model (overwhelming evidence
+to reject $H 0 : \beta_1 = 0$)
+
+But the actual deviance for the model is high `r glin$deviance` providing evidence against this Binomial model 
+
+$\chi^2_{8,0.9995}$ :
+
+```{r}
+qchisq(0.9995,8 )
+
+```
+
+## 5
+
+Binomial model estimating $\phi$ as $D(y,\hat{\mu})/(n-p)$.
+ 
+```{r}
+glin$deviance / (glin$df.residual)
+
+glq <- glm(p ~ 1 + x , weights = grain$n, data= grain, family=quasi)
+glq$deviance
+
+```
+
+## 6
+
+Standard errors for parameter estimates are then multiplied by:
+ 
+```{r}
+sqrt(glin$deviance / glin$df.residual)
+```
+
+## 7
+
+Improvement over the null model on 1 df.
+
+```{r}
+(glin$null.deviance-glin$deviance)/ (glin$deviance / glin$df.residual)
+
+```
+
+The scaled deviance for this model:
+
+```{r}
+glin$deviance/(glin$deviance / glin$df.residual)
+qchisq(0.95,7)
+```
+
+```{r}
+sglin <- summary(glin)
+```
+
+with $e.s.e(\hat{\beta_1})=$ 
+
+```{r}
+sglin$coefficients[2,"Std. Error"]
+sglin$coefficients[2,"Std. Error"] * sqrt(glin$deviance / glin$df.residual)
+ese_b=sglin$coefficients[2,"Std. Error"] * sqrt(glin$deviance / glin$df.residual)
+
+```
+
+So the wald test statistics 
+
+```{r}
+coefficients(glin)[2]
+coefficients(glin)[2] / ese_b
+t = coefficients(glin)[2] / ese_b
+```
+
+The slope is highly significant.
+
+```{r}
+1-pt(t, df=7)
+```
+
+## using quasi (same as subsection 5)
+
+```{r}
+glq <- glm(p ~ 1 + x , weights = grain$n, data= grain, family=quasi)
+summary(glq)
+```
