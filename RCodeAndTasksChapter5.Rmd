@@ -1,5 +1,5 @@
 ---
-title: "RCodeAndTasksChapter5.Rmd"
+title: "R Code And Tasks Chapter 5 (MAS 6003)"
 author: "Witold Wolski"
 date: "December 27, 2016"
 output: pdf_document
@@ -21,9 +21,9 @@ $$
 $$
 
 
-## 1.1 Example : AIDS deaths over time
+## 5.2.1 Example : AIDS deaths over time (Task 15)
 
-# 1 plot :
+### 1 plot :
 ```{r}
 rm(list=ls())
 load("data/MAS367-GLMs.RData", envir = e <- new.env())
@@ -35,7 +35,7 @@ plot(AIDS$quarter, log(AIDS$deaths+1))
 
 ```
 
-# 2 fit poisson with log link
+### 2 fit poisson with log link
 
 ```{r}
 glm.lin <- glm(deaths ~ quarter, data=AIDS, family=poisson(link='log'))
@@ -43,7 +43,7 @@ qchisq(0.95,glm.lin$df.residual)
 
 ```
 
-# 3 adding a quadratic term
+### 3 adding a quadratic term
 
 ```{r}
 glm.quad <- glm(deaths ~ quarter + I(quarter^2), data=AIDS, family=poisson(link='log'))
@@ -52,7 +52,7 @@ qchisq(0.95,glm.lin$df.residual)
 
 ```
 
-# 4 a line predictor on log(x)
+### 4 a line predictor on log(x)
 
 
 ```{r}
@@ -64,7 +64,57 @@ plot(log(AIDS$quarter), log(AIDS$deaths+0.5))
 
 ```
 
-# 5
+### 5
 
 Thus possible simple models are a line in logx or a quadratic in x, but there are reservations
 about both.
+
+
+# 5.3 Adjusting for exposure : offset (Task 16)
+
+An explanation of offset which is brief and clear can be found here (but not in the lecture notes of MAS 6003).
+
+[](http://stats.stackexchange.com/questions/11182/when-to-use-an-offset-in-a-poisson-regression)
+
+## 5.3.1 Example: Smoking and heart disease
+
+
+
+### 1,2,3,4 death rates
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+smoking <- e$smoking
+smoking$rate <- smoking$deaths/smoking$person.years * 1e5
+lapply(smoking,class)
+smoking$smoke <- as.factor(smoking$smoke)
+p1 <- ggplot(smoking, aes(age, rate, colour=smoke)) + geom_point()
+p2 <- ggplot(smoking, aes((age), I(log(rate)), colour=smoke)) + geom_point()
+p3 <- ggplot(smoking, aes(I(log(age)), I(log(rate)), colour=smoke)) + geom_point()
+p4 <- ggplot(smoking, aes(age, deaths, colour=smoke)) + geom_point()
+
+
+grid.arrange(p1,p2,p3,p4, ncol = 2)
+
+```
+
+### 5 The model
+
+```{r}
+mod.offset <- glm(deaths~ offset(log(person.years)) + smoke * age + I(age^2), family = poisson, data=smoking)
+summary(mod.offset)
+
+```
+
+With smokers = 1 and 0 for nonsmokers:
+for non-smokers:
+
+$-19.7+0.36x^2-0.02x^2$
+
+for smokers:
+
+$-17.34+0.33x 2 -0.02x 2$
+
+
+# 5.4 Non negative data with variance $\propto$ means
