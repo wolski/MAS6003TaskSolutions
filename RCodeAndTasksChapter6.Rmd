@@ -1,0 +1,93 @@
+---
+title: "R Code And Tasks Chapter 5 (MAS 6003)"
+author: "Witold Wolski"
+date: "December 28, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# 6.1 Types of 2 way tables - response / control variables
+
+## 6.1.1 Case(a): Skin cancer (melanoma) data - 2 response variables
+
+__Cross sectional__ study of malignant melanoma.
+ Both tumour type and site are __response variables__ because none
+of the row or column totals were fixed in advance of the data collection.
+
+
+```{r}
+library(reshape2)
+rm(list=ls())
+load("data/MAS367-GLMs.RData", envir = e <- new.env())
+
+Mela <- e$Mela
+head(Mela)
+dcast(Mela,tumour.type~ site, value.var="number")
+```
+
+## 6.1.2 Case(b) : Flu vaccine data - 1 response and 1 control variable
+
+Patients were randomly assigned to the two groups (Placebo, Vaccine), and the response (levels of an antibody found in the blood six weeks after vaccination) was determined. Antibody level is the __response__ and vaccine group is a __controlled variable__ (with totals fixed by experimental design).
+
+```{r}
+vaccine <- e$vaccine
+head(vaccine)
+dcast(vaccine, treatment ~ response, value.var="count")
+```
+
+## 6.2.1 Association, Independence and Homogeneity
+
+
+Indepence :
+
+Case(a)
+
+Probabilities of interest $\pi_{ij} = P(A=i, B=j)$
+
+$$
+P(A = i,B = j) = P(A = i) \times P(B = j)
+$$
+
+
+Case(b)
+
+Probabilities of interest are conditional probablities $\pi{ij} = P(B=j|A=i)$.
+
+The interest is in whether the probability distribution of the response (antibody level) is the same in each level of the controlled variable (drug group). If it doesn't depend on $i$ then we can write 
+
+$$(\pi_{ij} = \pi_{.j})$$.
+
+This is known as __homogeneity__.
+
+
+# 6.3 Distribution for two-way tables
+
+## 6.3.1 Case(a): two response variables
+
+## 6.3.2 Case(b): one response variable
+
+## 6.3.3 Case(c): independent poisson (no fixed margins).
+
+
+## 6.3.4 Expected values
+
+# 6.4 GLMs and two-way contingency tables
+
+## 6.4.1 Natural hypothesis are log-linear models
+
+## 6.4.2 Poisson log-linear modelling for two-way tables
+
+## 6.4.3 Maximum likelihood estimation for $\pi_{ij}$ in case (a) and Task 19 and Task 20.
+
+Task 19 Verify the maximum likelihood estimate for $\pi_{ij}$ for the A + B model for case(a).
+Task 20 Verify the maximum likelihood estimate for $\pi_{ij}$ for the A + B model for case(b).
+
+
+# 6.5 Interaction plots and examination of residues.
+
+```interaction.plot``` honorable mentioned.
+
