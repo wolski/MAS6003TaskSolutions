@@ -91,3 +91,53 @@ Task 20 Verify the maximum likelihood estimate for $\pi_{ij}$ for the A + B mode
 
 ```interaction.plot``` honorable mentioned.
 
+# 6.6 Analysis of the skin cancer data (case(a)) using log-linear models (Task 21)
+
+## 6.6.1 Fitted values for the skin cancer data
+
+* $A \times B$ saturated model.
+
+```{r}
+glm.sat <- glm(number ~ factor(tumour.type) * factor(site), family = poisson(log), data=Mela)
+matrix(glm.sat$fitted.values,ncol=3)
+
+```
+
+* $A + B$ :independence
+
+```{r}
+glm.sat <- glm(number ~ factor(tumour.type) + factor(site), family = poisson(log), data=Mela)
+matrix(glm.sat$fitted.values,ncol=3)
+
+```
+
+* $A$ : independence and the same probability for each column category
+
+```{r}
+glm.sat <- glm(number ~ factor(tumour.type), family = poisson(log), data=Mela)
+matrix(glm.sat$fitted.values,ncol=3)
+
+```
+
+* $B$ : independence and the same probability for each row category
+
+ Calculate the table of fitted values for the linear predictor containing B for case(a)
+
+```{r}
+glm.sat <- glm(number ~ factor(site), family = poisson(log), data=Mela)
+res<-matrix(glm.sat$fitted.values,ncol=3)
+res
+rowSums(res)
+colSums(res)
+```
+
+## 6.6.2
+
+* $A\times B$ : saturated model
+
+```{r}
+void <- glm(number ~ factor(tumour.type) * factor(site), family = poisson(log), data=Mela)
+```
+
+## 6.6.3 Skin cancer data case(a) revisited
+
