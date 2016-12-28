@@ -117,4 +117,83 @@ for smokers:
 $-17.34+0.33x 2 -0.02x 2$
 
 
-# 5.4 Non negative data with variance $\propto$ means
+# 5.4 Non negative data with variance $\propto$ means (Task 17)
+
+Compare the output from fitting a Poisson with log link and a line predictor on x to the
+data in Example 5.2.1 with that obtained using the the log link and assuming that the variance
+is proportional to the mean.
+
+```{r}
+glm.lin <- glm(deaths ~ quarter, data=AIDS, family=poisson(link='log'))
+summary(glm.lin)
+
+```
+
+```{r}
+glm.quasi <- glm(deaths ~ quarter, data=AIDS, family=quasi(variance = "mu", link='log') )
+summary(glm.quasi)
+
+```
+
+The only difference is in the "Std. Error" (see summary output above).
+
+
+# 5.5 Further statistical modelling of count data
+
+A train operator is reviewing the capacity of its trains between certain English cities. Their
+particular interest is in modelling the number of train passengers starting their train journey
+between 16:00 and 18:00 on weekdays between English cities.
+
+* $i$ starting station
+* $j$ destination
+* $n_{ij}$ number of people living within 5 miles of either station i or j
+* $r_{ij}$ number of passengers starting journey between 4 and 6 pm between station i and j
+
+$$
+Po(\mu_{ij}) = \frac{\exp(-\mu_{ij})\mu^{r_{ij}}}{r_{ij}!}
+$$
+
+$$
+\mu_{ij} = \alpha_i \exp(\beta n_{ij})
+$$
+
+Models the probablity of having $r_{ij}$ passengers starting journey from station $i$ to station $j$.
+
+* S - starting station (same as i)
+* P - number of people living within 5 miles of the starting or destination stations
+* C - number of passengers starting their train journey between 4 and 6 pm at station S.
+
+
+
+```{r}
+train <- e$train
+train.glm <- glm(C ~ factor(S) + P, family=poisson("log"),data=train)
+summary(train.glm)
+```
+
+We want to estimate $\alpha_i$ and $\beta$ from the data to estimate $\mu_{ij}$ given $n_{ij}$.
+
+* $\hat{\alpha_1} = \exp{\gamma_1}$
+* $\hat{\alpha_i} = \exp{\gamma_1 + \gamma_i}$, for $i\ge 1$
+* $\beta = \delta$
+
+## Task 18
+
+Use the output to determine $\alpha_1$. Hence, show that the parameter estimates $\alpha_i$ and $\beta$ satisfy the first of the mle equations
+$$
+\sum_{j\in D(i)} [r_{ij}/\alpha_i- \exp(\beta n_{ij})] = 0
+$$
+
+```{r}
+coefTrain <- coefficients(train.glm)
+coefTrain
+```
+
+```{r}
+alpha_1 = exp(coefTrain[1])
+alpha_2_3 = exp(coefTrain[1]+coefTrain[2:3])
+alphas <- c(alpha_1,alpha_2_3)
+alphas
+beta = coefTrain[3]
+
+```
