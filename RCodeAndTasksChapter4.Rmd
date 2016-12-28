@@ -14,6 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 # 4.4.1 Model building for the beetle data
 
 ```{r}
+rm(list=ls())
 getwd()
 
 load("data/MAS367-GLMs.RData", envir = e <- new.env())
@@ -312,10 +313,14 @@ Binomial model estimating $\phi$ as $D(y,\hat{\mu})/(n-p)$.
  
 ```{r}
 glin$deviance / (glin$df.residual)
-
 glq <- glm(p ~ 1 + x , weights = grain$n, data= grain, family=quasi)
 glq$deviance
+glq <- glm(p ~ 1 + x , weights = grain$n, data= grain, family=quasi(link = "identity", variance="constant"))
+glq$deviance
 
+#this code fails
+#glq <- glm(p ~ 1 + x , weights = grain$n, data= grain, family=quasi(link = "probit", variance="constant"))
+grain$x
 ```
 
 ## 6
