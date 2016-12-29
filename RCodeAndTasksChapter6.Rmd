@@ -219,6 +219,7 @@ MelaFix$labelAHead <- as.factor(MelaFix$labelAHead)
 
 glm.indepNoHead <- glm(number ~ factor(tumour.type) + factor(site) + factor(labelAHead), family = poisson(log), data=MelaFix)
 glm.indepNoHead
+
 ```
 
 ### Task 22 Verify the analysis (See above)
@@ -230,3 +231,56 @@ For the $4\times3$ table in Example 6.1.1, and the independence model, show dire
 out fitting a log-linear model) that $\mu_{11} = 5.780$, $e_{P,11} = 6.747$, and $e_{D,11} = 5.135$.
 
 ### Task 24
+
+# 6.7 Flu vaccine data (case(b)) revisited
+
+* minimal model
+
+```{r}
+head(vaccine)
+dim(vaccine)
+glm.null <- glm(count ~ 1 , family = poisson(log), data=vaccine)
+glm.null$df.null
+
+glm.min <- glm(count ~ treatment , family = poisson(log), data=vaccine)
+glm.min
+glm.min$df.residual
+qchisq(0.95,4)
+
+```
+
+* homogeneity model (A+B)
+
+```{r}
+head(vaccine)
+glm.homo <- glm(count ~ response + treatment , family = poisson(log), data=vaccine)
+glm.homo$df.residual
+glm.homo$deviance
+qchisq(0.95,4)
+
+```
+
+* not much of an improvement on 2 degrees of freedom
+
+```{r}
+glm.min$deviance - glm.homo$deviance
+qchisq(0.95,2)
+```
+
+* groups differ in their response
+
+Again ```interaction.plot``` can be used.
+
+
+```{r}
+par(mfrow=c(1,2))
+with(vaccine, {
+interaction.plot(response, treatment, log(count),las=2)
+interaction.plot(treatment, response, log(count),las=2)
+
+})
+
+```
+### Task 25 verify analysis in Example 6.7
+
+### Task 26 What is the largest pearson residual for the A+B model?
