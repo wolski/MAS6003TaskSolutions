@@ -106,16 +106,16 @@ matrix(glm.sat$fitted.values,ncol=3)
 * $A + B$ :independence
 
 ```{r}
-glm.sat <- glm(number ~ factor(tumour.type) + factor(site), family = poisson(log), data=Mela)
-matrix(glm.sat$fitted.values,ncol=3)
+glm.indep <- glm(number ~ factor(tumour.type) + factor(site), family = poisson(log), data=Mela)
+matrix(glm.indep$fitted.values,ncol=3)
 
 ```
 
 * $A$ : independence and the same probability for each column category
 
 ```{r}
-glm.sat <- glm(number ~ factor(tumour.type), family = poisson(log), data=Mela)
-matrix(glm.sat$fitted.values,ncol=3)
+glm.indepCol <- glm(number ~ factor(tumour.type), family = poisson(log), data=Mela)
+matrix(glm.indepCol$fitted.values,ncol=3)
 
 ```
 
@@ -124,9 +124,8 @@ matrix(glm.sat$fitted.values,ncol=3)
  Calculate the table of fitted values for the linear predictor containing B for case(a)
 
 ```{r}
-glm.sat <- glm(number ~ factor(site), family = poisson(log), data=Mela)
-res<-matrix(glm.sat$fitted.values,ncol=3)
-res
+glm.indepRow <- glm(number ~ factor(site), family = poisson(log), data=Mela)
+res<-matrix(glm.indepRow$fitted.values,ncol=3)
 rowSums(res)
 colSums(res)
 ```
@@ -141,3 +140,93 @@ void <- glm(number ~ factor(tumour.type) * factor(site), family = poisson(log), 
 
 ## 6.6.3 Skin cancer data case(a) revisited
 
+* 1  The test of independence based on the log-linear model $A + B$
+
+```{r}
+1 - pchisq(glm.indep$deviance,6)
+qchisq(0.975,6)
+```
+
+* 2 The usual Pearson $\chi^2$ test for independence
+
+```{r}
+chisq.test(matrix(Mela$number,nrow=4))
+1-pchisq(65.813,6)
+
+```
+
+* 5 
+
+Deviance residuals see 3.6.4 in the notes.
+Pearson residuals see Task 9 and page 91.
+
+```{r}
+plot(glm.indep$y,glm.indep$fitted.values)
+sglmindep<-summary(glm.indep)
+plot(sglmindep$deviance.resid , main="deviance residuals")
+plot((glm.indep$y-glm.indep$fitted.values)/sqrt(glm.indep$fitted.values), main = "pearson residuals")
+
+```
+
+* interaction plot
+
+```{r}
+par(mfrow=c(1,2))
+with(Mela, {
+interaction.plot(site, tumour.type, log(number),las=2)
+interaction.plot(tumour.type, site, log(number),las=2)
+
+})
+
+```
+
+* removing first row or first column
+
+remove cancer type A
+
+```{r}
+MelaNoA <- Mela[Mela$tumour.type!="A",]
+glm.indepNoA <- glm(number ~ factor(tumour.type) + factor(site), family = poisson(log), data=MelaNoA)
+glm.indepNoA
+qchisq(0.975, 4)
+
+
+```
+
+
+remove site Head
+
+```{r}
+MelaNoHead <- Mela[Mela$site!="Head.and.Neck",]
+
+glm.indepNoHead <- glm(number ~ factor(tumour.type) + factor(site), family = poisson(log), data=MelaNoHead)
+glm.indepNoHead
+qchisq(0.975, 3)
+```
+
+* 9 and 10 is about pooling the B, C, D or Trunk and Extremities
+
+* 11
+
+A log-linear model can be fitted which is additive in the factors, but includes a term for the (1,1) cell — an indicator variable for that cell (that is, treats it as an outlier).
+
+```{r}
+head(Mela)
+MelaFix <- Mela
+MelaFix$labelAHead <- rep(0,nrow(Mela))
+MelaFix$labelAHead[1] <- 1
+MelaFix$labelAHead <- as.factor(MelaFix$labelAHead)
+
+glm.indepNoHead <- glm(number ~ factor(tumour.type) + factor(site) + factor(labelAHead), family = poisson(log), data=MelaFix)
+glm.indepNoHead
+```
+
+### Task 22 Verify the analysis (See above)
+
+### Task 23 
+
+
+For the $4\times3$ table in Example 6.1.1, and the independence model, show directly (with-
+out fitting a log-linear model) that $\mu_{11} = 5.780$, $e_{P,11} = 6.747$, and $e_{D,11} = 5.135$.
+
+### Task 24
