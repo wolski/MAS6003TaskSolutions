@@ -1,0 +1,41 @@
+---
+title: "R Code And Tasks Chapter 7 (MAS 6003)"
+author: "Witold Wolski"
+date: "December 29, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Three way tables
+
+* all three factors are responses
+
+* one factor is fixed and 2 are responses
+
+* two factors are fixed and one is an response
+
+## 7.4.3 Example: ulcers and aspirin
+
+```{r}
+library(reshape2)
+rm(list=ls())
+load("data/MAS367-GLMs.RData", envir = e <- new.env())
+
+aspirin <- e$aspirin
+head(aspirin)
+
+dcast(aspirin,type.of.ulcer + ulcer.or.not ~ aspirin.use, value.var = "count")
+```
+
+## 7.4.4
+
+* $BC+A$
+* $BC + AB$
+* $BC + AC$
+
+```{r}
+
+```
