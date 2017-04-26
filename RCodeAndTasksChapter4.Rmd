@@ -104,7 +104,8 @@ anova(linear.glm, quad.glm,test="Chi")
 
 $AIC = -2l + 2p$
 
-$\frac{l_min - l_mod}{l_min}$
+$\frac{l_{min} - l_{mod}}{l_{min}}$
+
 ```{r}
 quad.glm$aic
 l_mod<-length(quad.glm$coefficients) - 0.5*quad.glm$aic
