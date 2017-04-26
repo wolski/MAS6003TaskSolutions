@@ -152,7 +152,7 @@ w/\phi E(b''(\theta))  &amp;= (w/\phi)^2 E((y-E(Y))^2)\\
 \frac{\phi}{w} b''(\theta) &amp;= Var(Y)
 \end{aligned}
 \]</span></p>
-<p>whith <span class="math inline">\(Var(Y) = E((y-E(Y))^2)\)</span> and <span class="math inline">\(E(b''(\theta)) = b''(\theta)\)</span> (but this seems quite a stretch).</p>
+<p>with <span class="math inline">\(Var(Y) = E((y-E(Y))^2)\)</span> and <span class="math inline">\(E(b''(\theta)) = b''(\theta)\)</span> (but this seems quite a stretch).</p>
 </div>
 <div id="task-2" class="section level2">
 <h2>Task 2</h2>
@@ -189,7 +189,7 @@ b(\theta)  = \log(1 + e^\theta) \rightarrow b'(\theta) = \frac{e^\theta}{1+e^\th
 <div id="iv" class="section level3">
 <h3>iv</h3>
 <p>For Gamma <span class="math display">\[
-b(\theta) = -log(-theta) \rightarrow b'(\theta) = +1/\theta \rightarrow b''(\theta) = 1/\theta^2 =
+b(\theta) = -log(-\theta) \rightarrow b'(\theta) = +1/\theta \rightarrow b''(\theta) = 1/\theta^2 =
 (-1\theta)^2 = \mu^2
 \]</span></p>
 </div>
@@ -197,7 +197,7 @@ b(\theta) = -log(-theta) \rightarrow b'(\theta) = +1/\theta \rightarrow b''(\the
 <div id="task-3" class="section level1">
 <h1>Task 3</h1>
 <p>Task 3 Verify the canonical links for the Normal, Binomial, Poisson and Gamma.</p>
-<p>The link function <span class="math inline">\(g\)</span> for which <span class="math inline">\(\theta_i = x^T_i\beta\)</span> (that is, for which <span class="math inline">\(g = (b')^{-1}\)</span> is called the canonical link.</p>
+<p>The link function <span class="math inline">\(g\)</span> for which <span class="math inline">\(\theta_i = x^T_i\beta\)</span> (that is, for which <span class="math inline">\(g = (b')^{-1}\)</span>) is called the canonical link.</p>
 <p>Hence, the task is to find the inverse of <span class="math inline">\(g=(b')^{-1}\)</span>.</p>
 <div id="for-normal" class="section level3">
 <h3>for Normal</h3>
@@ -214,7 +214,7 @@ b'(\theta) = e^\theta \rightarrow \mu = e^\theta \rightarrow \theta = \log(\mu)
 <div id="for-binomial" class="section level3">
 <h3>for Binomial</h3>
 <p><span class="math display">\[
-b'(\theta) = log(1+e^\theta) \rightarrow \mu = log(1+e^\theta) \rightarrow \theta =  \log(\mu_i /(1 - \mu_i ))
+b'(\theta) = \log(1+e^\theta) \rightarrow \mu = \log(1+e^\theta) \rightarrow \theta =  \log(\mu_i /(1 - \mu_i ))
 \]</span></p>
 </div>
 <div id="for-gamma" class="section level3">
@@ -270,13 +270,13 @@ l(\mu;y,\phi) = \sum_i{\frac{y_i\theta - b(\theta)}{\phi/w_i}} + c(y,\phi)
 \partial l / \partial \theta_i = \sum_i (w_i /\phi) \{y_i - b'(\theta_i)\} = 0
 \]</span></p>
 <!---->
-<p>The model that allows the mean of each observation to be a separate parameter is called the  or  or maximal model.</p>
+<p>The model that allows the mean of each observation to be a separate parameter is called the <strong>full</strong>, <strong>saturated</strong> or <strong>maximal</strong> model.</p>
 <p>The maximum possible value of <span class="math inline">\(L\)</span> as the components of <span class="math inline">\(\mu\)</span> vary without any restrictions (or, essentially equivalently, when there is an element of <span class="math inline">\(\beta\)</span> for each observation, so that <span class="math inline">\(\mu^\diamond_i = h(\eta i ) = h(\beta i )\)</span> occurs when <span class="math inline">\(\mu^\diamond_i = y_i\)</span>, hence <span class="math inline">\(\mu^\diamond_i = y_i\)</span> for all <span class="math inline">\(i\)</span>.</p>
 </div>
 <div id="task-6" class="section level1">
 <h1>Task 6</h1>
 <p>Deviances for common distributions.</p>
-<p>Confirm results in table these using the table in 3.3.4 and equation (3.12).</p>
+<p>Confirm results using the table in 3.3.4 and equation (3.12).</p>
 <p>Eq <span class="math inline">\(3.12\)</span> is:</p>
 <p><span class="math display">\[
 D(y,\hat{\mu}) = \phi S(y,\hat{\mu}) = 2 \sum_i w_i [y_i(\hat{\theta^\diamond_i} - \hat{\theta_i}) - 
@@ -305,11 +305,12 @@ b(\hat{\theta^\diamond_i}) + b(\hat{\theta_i})]
 </div>
 <div id="for-binomial-1" class="section level2">
 <h2>For Binomial</h2>
+<p>TODO</p>
 </div>
 </div>
 <div id="task-7" class="section level1">
 <h1>Task 7</h1>
-<p>Use the results in 3.6.4 to obtain simple expressions for the null deviances for Poisson (weights must be one) and Gamma (assume weights are one).</p>
+<p>Use the results in 3.6.4 to obtain simple expressions for the null deviance for Poisson (weights must be one) and Gamma (assume weights are one).</p>
 <p>If <span class="math inline">\(W = \sum w_i\)</span> <span class="math display">\[
 \mu = \sum w_i y_i / W
 \]</span></p>
@@ -327,12 +328,12 @@ b(\hat{\theta^\diamond_i}) + b(\hat{\theta_i})]
 </div>
 <div id="for-gamma-1" class="section level3">
 <h3>For Gamma</h3>
-<p>Similarily</p>
+<p>Similarly, TODO</p>
 </div>
 </div>
 <div id="task-8" class="section level1">
 <h1>Task 8</h1>
-<p>For the Poisson distribution, verify that <span class="math inline">\(D\)</span> and <span class="math inline">\(\chi^2\)</span> are asymptotically equivalent. (Hint: use that for small <span class="math inline">\(|x - y|, xlog(x/y) \approx (x - y) + (x - y)^2 /(2y)\)</span>.)</p>
+<p>For the Poisson distribution, verify that <span class="math inline">\(D\)</span> and <span class="math inline">\(\chi^2\)</span> are asymptotically equivalent. (Hint: use that for small <span class="math inline">\(|x - y|, x\log(x/y) \approx (x - y) + (x - y)^2 /(2y)\)</span>.)</p>
 <p><span class="math display">\[
 \chi^2 = \sum e^2_{P,i} = \sum (\sqrt{w_i} \frac{y_i - \hat{\mu}_i}{\sqrt{V(\hat{\mu}_i)}})^2
 \]</span></p>
@@ -352,7 +353,7 @@ D(y_i,\mu_i)=2\sum y_i \log(y_i/\hat{\mu}_i) - (y_i - \hat{\mu}_i) &amp;=\\
 </div>
 <div id="task-9" class="section level1">
 <h1>Task 9</h1>
-<p>Obtain the form of the  for the Binomial, Poisson and Gamma. (These are given in Chapters 4 and 5)</p>
+<p>Obtain the form of the <strong>Pearson residual</strong> for the Binomial, Poisson and Gamma. (These are given in Chapters 4 and 5)</p>
 <div id="for-binomial-2" class="section level3">
 <h3>For Binomial</h3>
 <p><span class="math display">\[
@@ -393,7 +394,7 @@ e_{p,i} = \frac{y_i - \mu_i}{\phi \mu_i^2}
 <ul>
 <li>Under which situations does it make sense to fit a linear model instead of a GLM with identity link?</li>
 </ul>
-<p>Almost always when the response <span class="math inline">\(y\)</span> is continous and normally distributed.</p>
+<p>Almost always when the response <span class="math inline">\(y\)</span> is continuous and normally distributed.</p>
 </div>
 <div id="task-11" class="section level1">
 <h1>Task 11</h1>

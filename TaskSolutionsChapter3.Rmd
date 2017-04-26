@@ -2,7 +2,9 @@
 title: "Task Solution Chapter 3"
 author: "Witold Wolski"
 date: "December 3, 2016"
-output: pdf_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -50,7 +52,7 @@ w/\phi E(b''(\theta))  &= (w/\phi)^2 E((y-E(Y))^2)\\
 \end{aligned}
 $$
 
-whith $Var(Y) = E((y-E(Y))^2)$ and $E(b''(\theta)) = b''(\theta)$ (but this seems quite a stretch). 
+with $Var(Y) = E((y-E(Y))^2)$ and $E(b''(\theta)) = b''(\theta)$ (but this seems quite a stretch). 
 
 
 ## Task 2
@@ -99,7 +101,7 @@ Need to check how to differentiate this.
 
 For Gamma
 $$
-b(\theta) = -log(-theta) \rightarrow b'(\theta) = +1/\theta \rightarrow b''(\theta) = 1/\theta^2 =
+b(\theta) = -log(-\theta) \rightarrow b'(\theta) = +1/\theta \rightarrow b''(\theta) = 1/\theta^2 =
 (-1\theta)^2 = \mu^2
 $$
 
@@ -111,7 +113,7 @@ $$
 Task 3 Verify the canonical links for the Normal, Binomial, Poisson and Gamma.
 
 The link function $g$ for which $\theta_i = x^T_i\beta$
-(that is, for which $g = (b')^{-1}$ is called the canonical link.
+(that is, for which $g = (b')^{-1}$) is called the canonical link.
 
 Hence, the task is to find the inverse of $g=(b')^{-1}$.
 
@@ -129,7 +131,7 @@ $$
 ### for Binomial
 
 $$
-b'(\theta) = log(1+e^\theta) \rightarrow \mu = log(1+e^\theta) \rightarrow \theta =  \log(\mu_i /(1 - \mu_i ))
+b'(\theta) = \log(1+e^\theta) \rightarrow \mu = \log(1+e^\theta) \rightarrow \theta =  \log(\mu_i /(1 - \mu_i ))
 $$
 
 
@@ -211,16 +213,16 @@ $$
 <!---->
 
 The model that allows the mean of each observation to be a separate parameter is called the
-\textbf{full} or \textbf{saturated} or maximal model.
+__full__, __saturated__ or __maximal__ model.
 
 The maximum possible value of $L$ as the components of $\mu$ vary without any restrictions (or, essentially equivalently, when there is an element of $\beta$ for each observation, so that $\mu^\diamond_i  = h(\eta i ) = h(\beta i )$ occurs when $\mu^\diamond_i = y_i$, hence $\mu^\diamond_i = y_i$ for all $i$.
 
 
 # Task 6
+
 Deviances for common distributions.
 
-
-Confirm results in table these using the table in 3.3.4 and equation (3.12).
+Confirm results using the table in 3.3.4 and equation (3.12).
 
 Eq $3.12$ is:
 
@@ -262,11 +264,12 @@ $$
 
 ## For Binomial
 
+TODO
 
 
 # Task 7
 
-Use the results in 3.6.4 to obtain simple expressions for the null deviances for Poisson
+Use the results in 3.6.4 to obtain simple expressions for the null deviance for Poisson
 (weights must be one) and Gamma (assume weights are one).
 
 If $W = \sum w_i$
@@ -289,12 +292,12 @@ $$
 
 ### For Gamma
 
-Similarily
+Similarly, TODO
 
 # Task 8
 
 For the Poisson distribution, verify that $D$ and $\chi^2$ are asymptotically equivalent. (Hint:
-use that for small $|x - y|, xlog(x/y) \approx (x - y) + (x - y)^2 /(2y)$.)
+use that for small $|x - y|, x\log(x/y) \approx (x - y) + (x - y)^2 /(2y)$.)
 
 $$
 \chi^2 = \sum e^2_{P,i} = \sum (\sqrt{w_i} \frac{y_i - \hat{\mu}_i}{\sqrt{V(\hat{\mu}_i)}})^2
@@ -322,7 +325,7 @@ $$
 
 # Task 9
 
-Obtain the form of the \textbf{Pearson residual} for the Binomial, Poisson and Gamma. (These
+Obtain the form of the __Pearson residual__ for the Binomial, Poisson and Gamma. (These
 are given in Chapters 4 and 5)
 
 
@@ -372,7 +375,7 @@ It's the same as a linear model.
 
 - Under which situations does it make sense to fit a linear model instead of a GLM with identity link?
 
-Almost always when the response $y$ is continous and normally distributed. 
+Almost always when the response $y$ is continuous and normally distributed. 
 
 
 # Task 11
