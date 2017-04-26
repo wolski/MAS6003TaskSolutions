@@ -209,7 +209,7 @@ summary(glm.0)
 
 ## Model 1 
 
-$\eta = \alpha$. Dobson is refernced, to make the lecture notes more confusing model 1 in dobson is model 3 in notes.
+$\eta = \alpha$. Dobson is referenced, to make the lecture notes more confusing model 1 in Dobson is model 3 in notes.
 
 ```{r}
 anthers$p <- anthers$obtained/anthers$prepared
@@ -248,7 +248,7 @@ glm.2 <-glm(p ~ group + force, weights = prepared, data = anthers, family = bino
 glm.2
 ```
 
-The conlusions od not change at all. The residual deviances are for both models are rather similar.
+The conclusions do not change at all. The residual deviance for both models are rather similar.
 
 
 # 4.5.1 (Task 14)
@@ -360,7 +360,7 @@ ese_b=sglin$coefficients[2,"Std. Error"] * sqrt(glin$deviance / glin$df.residual
 
 ```
 
-So the wald test statistics 
+So the Wald test statistics 
 
 ```{r}
 coefficients(glin)[2]
@@ -382,7 +382,7 @@ glq$deviance
 ```
 
 Somehow the numbers obtained are not equal to those in the lecture notes (3.62):
-Also trying to run the glm with ```quasi(link = "probit", variance = "constant")```
+Also trying to run the `glm` with ```quasi(link = "probit", variance = "constant")```
 does fail.
 
 
@@ -444,7 +444,7 @@ summary(gender.glm)
 coefficients(gender.glm)[2]
 ```
 
-Adjusting for age does not change the estimaged odds ratio `r exp(coefficients(gender.glm)[2])`.
+Adjusting for age does not change the estimated odds ratio `r exp(coefficients(gender.glm)[2])`.
 
 
 ## 4.6.5 Computing the confidence interval
