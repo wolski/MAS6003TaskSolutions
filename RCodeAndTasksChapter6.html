@@ -128,10 +128,9 @@ $(document).ready(function () {
 <h1>6.1 Types of 2 way tables - response / control variables</h1>
 <div id="casea-skin-cancer-melanoma-data---2-response-variables" class="section level2">
 <h2>6.1.1 Case(a): Skin cancer (melanoma) data - 2 response variables</h2>
-<p><strong>Cross sectional</strong> study of malignant melanoma. Both tumour type and site are <strong>response variables</strong> because none of the row or column totals were fixed in advance of the data collection.</p>
-<pre class="r"><code>library(reshape2)</code></pre>
-<pre><code>## Warning: package 'reshape2' was built under R version 3.3.2</code></pre>
-<pre class="r"><code>rm(list=ls())
+<p><strong>Cross sectional</strong> study of malignant melanoma. Both tumor type and site are <strong>response variables</strong> because none of the row or column totals were fixed in advance of the data collection.</p>
+<pre class="r"><code>library(reshape2)
+rm(list=ls())
 load(&quot;data/MAS367-GLMs.RData&quot;, envir = e &lt;- new.env())
 
 Mela &lt;- e$Mela
@@ -169,17 +168,22 @@ head(vaccine)</code></pre>
 </div>
 <div id="association-independence-and-homogeneity" class="section level2">
 <h2>6.2.1 Association, Independence and Homogeneity</h2>
-<p>Indepence :</p>
-<p>Case(a)</p>
+<p>Independence :</p>
+<div id="casea---skin-cancer" class="section level3">
+<h3>Case(a) - skin cancer</h3>
 <p>Probabilities of interest <span class="math inline">\(\pi_{ij} = P(A=i, B=j)\)</span></p>
 <p><span class="math display">\[
 P(A = i,B = j) = P(A = i) \times P(B = j)
 \]</span></p>
-<p>Case(b)</p>
-<p>Probabilities of interest are conditional probablities <span class="math inline">\(\pi{ij} = P(B=j|A=i)\)</span>.</p>
+<p>for all <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>, where <span class="math inline">\(\pi_i = P(A = i)\)</span> and <span class="math inline">\(\pi_j = P(B = j)\)</span> are the marginal probabilities of row <span class="math inline">\(i\)</span> and column <span class="math inline">\(j\)</span></p>
+</div>
+<div id="caseb---flue-vaccine-data" class="section level3">
+<h3>Case(b) - flue vaccine data</h3>
+<p>Probabilities of interest are conditional probabilities <span class="math inline">\(\pi{ij} = P(B=j|A=i)\)</span>.</p>
 <p>The interest is in whether the probability distribution of the response (antibody level) is the same in each level of the controlled variable (drug group). If it doesn’t depend on <span class="math inline">\(i\)</span> then we can write</p>
 <p><span class="math display">\[(\pi_{ij} = \pi_{.j})\]</span>.</p>
 <p>This is known as <strong>homogeneity</strong>.</p>
+</div>
 </div>
 </div>
 <div id="distribution-for-two-way-tables" class="section level1">
@@ -205,17 +209,39 @@ P(A = i,B = j) = P(A = i) \times P(B = j)
 <div id="poisson-log-linear-modelling-for-two-way-tables" class="section level2">
 <h2>6.4.2 Poisson log-linear modelling for two-way tables</h2>
 </div>
-<div id="maximum-likelihood-estimation-for-pi_ij-in-case-a-and-task-19-and-task-20." class="section level2">
-<h2>6.4.3 Maximum likelihood estimation for <span class="math inline">\(\pi_{ij}\)</span> in case (a) and Task 19 and Task 20.</h2>
-<p>Task 19 Verify the maximum likelihood estimate for <span class="math inline">\(\pi_{ij}\)</span> for the A + B model for case(a). Task 20 Verify the maximum likelihood estimate for <span class="math inline">\(\pi_{ij}\)</span> for the A + B model for case(b).</p>
+<div id="maximum-likelihood-estimation-for-pi_ij-in-case-a" class="section level2">
+<h2>6.4.3 Maximum likelihood estimation for <span class="math inline">\(\pi_{ij}\)</span> in case (a)</h2>
+<div id="task-19" class="section level3">
+<h3>Task 19</h3>
+<p>Verify the maximum likelihood estimate for <span class="math inline">\(\pi_{ij}\)</span> for the A + B model for case(a).</p>
+<p>Verify that <span class="math inline">\(\pi_{ij} = \frac{y_{i\cdot}y_{\cdot j}}{n^2}\)</span></p>
+<p>and somehow use information that <span class="math inline">\(\mu_{ij} = n \pi_i \pi_j\)</span></p>
+</div>
+<div id="task-20" class="section level3">
+<h3>Task 20</h3>
+<p>Verify the maximum likelihood estimate for <span class="math inline">\(\pi_{ij}\)</span> for the A + B model for case(b).</p>
+<p>Verify that <span class="math inline">\(\pi_{ij} = \frac{y_{\cdot j}}{n}\)</span></p>
+<p>and somehow use information that <span class="math inline">\(\mu_{ij} = n_i \pi_j\)</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\partial l(\mu_i) / \partial \pi_j &amp;= (\sum_i \sum_j -n_i\pi_j + y_{ij}\log(n_i\pi_j) - \log(y_{ij}!))'\\
+&amp;= \sum_i -n_i + \frac{y_{ij}}{\pi_j} \\
+&amp;= n + \frac{y_{ij}}{\pi_j} = 0\\
+\pi_{ij} &amp;= \frac{y_{\cdot j}}{n}
+\end{aligned}
+\]</span></p>
+</div>
 </div>
 </div>
 <div id="interaction-plots-and-examination-of-residues." class="section level1">
 <h1>6.5 Interaction plots and examination of residues.</h1>
 <p><code>interaction.plot</code> honorable mentioned.</p>
 </div>
-<div id="analysis-of-the-skin-cancer-data-casea-using-log-linear-models-task-21" class="section level1">
-<h1>6.6 Analysis of the skin cancer data (case(a)) using log-linear models (Task 21)</h1>
+<div id="analysis-of-the-skin-cancer-data-casea-using-log-linear-models" class="section level1">
+<h1>6.6 Analysis of the skin cancer data (case(a)) using log-linear models</h1>
+<div id="task-21" class="section level3">
+<h3>Task 21</h3>
+</div>
 <div id="fitted-values-for-the-skin-cancer-data" class="section level2">
 <h2>6.6.1 Fitted values for the skin cancer data</h2>
 <ul>

@@ -2,7 +2,9 @@
 title: "R Code And Tasks Chapter 6 (MAS 6003)"
 author: "Witold Wolski"
 date: "December 28, 2016"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -15,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## 6.1.1 Case(a): Skin cancer (melanoma) data - 2 response variables
 
 __Cross sectional__ study of malignant melanoma.
- Both tumour type and site are __response variables__ because none
+ Both tumor type and site are __response variables__ because none
 of the row or column totals were fixed in advance of the data collection.
 
 
@@ -42,9 +44,9 @@ dcast(vaccine, treatment ~ response, value.var="count")
 ## 6.2.1 Association, Independence and Homogeneity
 
 
-Indepence :
+Independence :
 
-Case(a)
+### Case(a) - skin cancer
 
 Probabilities of interest $\pi_{ij} = P(A=i, B=j)$
 
@@ -52,10 +54,11 @@ $$
 P(A = i,B = j) = P(A = i) \times P(B = j)
 $$
 
+for all $i$ and $j$, where $\pi_i = P(A = i)$ and $\pi_j = P(B = j)$ are the marginal probabilities of row $i$ and column $j$ 
 
-Case(b)
+### Case(b) - flue vaccine data
 
-Probabilities of interest are conditional probablities $\pi{ij} = P(B=j|A=i)$.
+Probabilities of interest are conditional probabilities $\pi{ij} = P(B=j|A=i)$.
 
 The interest is in whether the probability distribution of the response (antibody level) is the same in each level of the controlled variable (drug group). If it doesn't depend on $i$ then we can write 
 
@@ -81,17 +84,40 @@ This is known as __homogeneity__.
 
 ## 6.4.2 Poisson log-linear modelling for two-way tables
 
-## 6.4.3 Maximum likelihood estimation for $\pi_{ij}$ in case (a) and Task 19 and Task 20.
+## 6.4.3 Maximum likelihood estimation for $\pi_{ij}$ in case (a)
 
-Task 19 Verify the maximum likelihood estimate for $\pi_{ij}$ for the A + B model for case(a).
-Task 20 Verify the maximum likelihood estimate for $\pi_{ij}$ for the A + B model for case(b).
+### Task 19 
 
+Verify the maximum likelihood estimate for $\pi_{ij}$ for the A + B model for case(a).
+
+Verify that $\pi_{ij} = \frac{y_{i\cdot}y_{\cdot j}}{n^2}$
+
+and somehow use information that $\mu_{ij} = n \pi_i \pi_j$
+
+### Task 20 
+Verify the maximum likelihood estimate for $\pi_{ij}$ for the A + B model for case(b).
+
+Verify that $\pi_{ij} = \frac{y_{\cdot j}}{n}$
+
+and somehow use information that $\mu_{ij} = n_i \pi_j$
+
+$$
+\begin{aligned}
+\partial l(\mu_i) / \partial \pi_j &= (\sum_i \sum_j -n_i\pi_j + y_{ij}\log(n_i\pi_j) - \log(y_{ij}!))'\\
+&= \sum_i -n_i + \frac{y_{ij}}{\pi_j} \\
+&= n + \frac{y_{ij}}{\pi_j} = 0\\
+\pi_{ij} &= \frac{y_{\cdot j}}{n}
+\end{aligned}
+$$
 
 # 6.5 Interaction plots and examination of residues.
 
 ```interaction.plot``` honorable mentioned.
 
-# 6.6 Analysis of the skin cancer data (case(a)) using log-linear models (Task 21)
+# 6.6 Analysis of the skin cancer data (case(a)) using log-linear models 
+
+### Task 21
+
 
 ## 6.6.1 Fitted values for the skin cancer data
 
