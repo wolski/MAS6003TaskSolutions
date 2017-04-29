@@ -354,6 +354,9 @@ D(y_i,\mu_i)=2\sum y_i \log(y_i/\hat{\mu}_i) - (y_i - \hat{\mu}_i) &amp;=\\
 <div id="task-9" class="section level1">
 <h1>Task 9</h1>
 <p>Obtain the form of the <strong>Pearson residual</strong> for the Binomial, Poisson and Gamma. (These are given in Chapters 4 and 5)</p>
+<p><span class="math display">\[
+e_{P,i} &amp;= w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
+\]</span></p>
 <div id="for-binomial-2" class="section level3">
 <h3>For Binomial</h3>
 <p><span class="math display">\[
@@ -361,7 +364,7 @@ Var(\mu_i) =  \phi/w_i b''(\theta) = (1/n) \mu(1-\mu)
 \]</span></p>
 <p>than</p>
 <p><span class="math display">\[
-e_{p,i} = \frac{y_i - \mu_i}{Var(\mu_i)} \stackrel{with 1}{=} \frac{y_i - \mu_i}{\mu_i(1-\mu_i)/n_i}
+e_{p,i} = \frac{y_i - \mu_i}{Var(\mu_i)} \stackrel{with 1}{=} \frac{y_i - \mu_i}{\sqrt{\mu_i(1-\mu_i)/n_i}}
 \]</span></p>
 </div>
 <div id="for-poisson-2" class="section level3">
@@ -371,7 +374,7 @@ Var(\mu_i) = \phi/w_i b''(\theta) = (1/1) \mu
 \]</span></p>
 <p>than</p>
 <p><span class="math display">\[
-e_{p,i} = \frac{y_i - \mu_i}{\mu_i}
+e_{p,i} = \frac{y_i - \mu_i}{\sqrt{\mu_i}}
 \]</span></p>
 </div>
 <div id="for-gamma-2" class="section level3">
@@ -381,7 +384,7 @@ Var(\mu_i) = \phi/w_i b''(\theta) = (\phi/1) \mu^2
 \]</span></p>
 <p>than</p>
 <p><span class="math display">\[
-e_{p,i} = \frac{y_i - \mu_i}{\phi \mu_i^2}
+e_{p,i} = \frac{y_i - \mu_i}{sqrt{\phi} \mu_i}
 \]</span></p>
 </div>
 </div>

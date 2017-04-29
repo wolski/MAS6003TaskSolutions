@@ -328,6 +328,10 @@ $$
 Obtain the form of the __Pearson residual__ for the Binomial, Poisson and Gamma. (These
 are given in Chapters 4 and 5)
 
+$$
+e_{P,i} &= w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
+$$
+
 
 ### For Binomial
 
@@ -338,7 +342,7 @@ $$
 than
 
 $$
-e_{p,i} = \frac{y_i - \mu_i}{Var(\mu_i)} \stackrel{with 1}{=} \frac{y_i - \mu_i}{\mu_i(1-\mu_i)/n_i}
+e_{p,i} = \frac{y_i - \mu_i}{Var(\mu_i)} \stackrel{with 1}{=} \frac{y_i - \mu_i}{\sqrt{\mu_i(1-\mu_i)/n_i}}
 $$
 
 ### For Poisson
@@ -350,7 +354,7 @@ $$
 than
 
 $$
-e_{p,i} = \frac{y_i - \mu_i}{\mu_i}
+e_{p,i} = \frac{y_i - \mu_i}{\sqrt{\mu_i}}
 $$
 
 
@@ -363,7 +367,7 @@ $$
 than
 
 $$
-e_{p,i} = \frac{y_i - \mu_i}{\phi \mu_i^2}
+e_{p,i} = \frac{y_i - \mu_i}{sqrt{\phi} \mu_i}
 $$
 
 
