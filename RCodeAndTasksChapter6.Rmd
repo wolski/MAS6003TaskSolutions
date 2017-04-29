@@ -118,6 +118,7 @@ $$
 
 ### Task 21
 
+Calculate the table of fitted values for the linear predictor containing B for case(a)
 
 ## 6.6.1 Fitted values for the skin cancer data
 
@@ -133,17 +134,35 @@ matrix(glm.sat$fitted.values,ncol=3)
 
 ```{r}
 glm.indep <- glm(number ~ factor(tumour.type) + factor(site), family = poisson(log), data=Mela)
+glm.indep
 matrix(glm.indep$fitted.values,ncol=3)
 
 ```
+
+Or much simpler
+
+```{r}
+mel <- aggregate(number ~ site, Mela, sum)$number
+tum <- aggregate(number ~ tumour.type, Mela, sum)$number
+(mel %*% t(tum))/400
+
+```
+
 
 * $A$ : independence and the same probability for each column category
 
 ```{r}
 glm.indepCol <- glm(number ~ factor(tumour.type), family = poisson(log), data=Mela)
-matrix(glm.indepCol$fitted.values,ncol=3)
+t(x <- matrix(glm.indepCol$fitted.values,nrow=3, byrow=T))
 
 ```
+
+Or much simpler
+
+```{r}
+tum / 3 
+```
+
 
 * $B$ : independence and the same probability for each row category
 
@@ -151,9 +170,7 @@ matrix(glm.indepCol$fitted.values,ncol=3)
 
 ```{r}
 glm.indepRow <- glm(number ~ factor(site), family = poisson(log), data=Mela)
-res<-matrix(glm.indepRow$fitted.values,ncol=3)
-rowSums(res)
-colSums(res)
+(res<-matrix(glm.indepRow$fitted.values,ncol=3))
 ```
 
 ## 6.6.2
@@ -161,19 +178,20 @@ colSums(res)
 * $A\times B$ : saturated model
 
 ```{r}
-void <- glm(number ~ factor(tumour.type) * factor(site), family = poisson(log), data=Mela)
+(void <- glm(number ~ factor(tumour.type) * factor(site), family = poisson(log), data=Mela))
+matrix(void$fitted.values, byrow = F, nrow=4)
 ```
 
 ## 6.6.3 Skin cancer data case(a) revisited
 
-* 1  The test of independence based on the log-linear model $A + B$
+1.  The test of independence based on the log-linear model $A + B$
 
 ```{r}
 1 - pchisq(glm.indep$deviance,6)
 qchisq(0.975,6)
 ```
 
-* 2 The usual Pearson $\chi^2$ test for independence
+2. The usual Pearson $\chi^2$ test for independence
 
 ```{r}
 chisq.test(matrix(Mela$number,nrow=4))
@@ -181,7 +199,7 @@ chisq.test(matrix(Mela$number,nrow=4))
 
 ```
 
-* 5 
+5. 
 
 Deviance residuals see 3.6.4 in the notes.
 Pearson residuals see Task 9 and page 91.
@@ -194,7 +212,7 @@ plot((glm.indep$y-glm.indep$fitted.values)/sqrt(glm.indep$fitted.values), main =
 
 ```
 
-* interaction plot
+6. interaction plot
 
 ```{r}
 par(mfrow=c(1,2))
@@ -206,9 +224,9 @@ interaction.plot(tumour.type, site, log(number),las=2)
 
 ```
 
-* removing first row or first column
+8. removing first row (T1) or first column (Head and Neck)
 
-remove cancer type A
+* remove cancer type A
 
 ```{r}
 MelaNoA <- Mela[Mela$tumour.type!="A",]
@@ -219,8 +237,7 @@ qchisq(0.975, 4)
 
 ```
 
-
-remove site Head
+* remove site Head
 
 ```{r}
 MelaNoHead <- Mela[Mela$site!="Head.and.Neck",]
@@ -230,9 +247,9 @@ glm.indepNoHead
 qchisq(0.975, 3)
 ```
 
-* 9 and 10 is about pooling the B, C, D or Trunk and Extremities
+9. and 10. is about pooling the B, C, D or Trunk and Extremities
 
-* 11
+11.
 
 A log-linear model can be fitted which is additive in the factors, but includes a term for the (1,1) cell — an indicator variable for that cell (that is, treats it as an outlier).
 
@@ -256,7 +273,24 @@ glm.indepNoHead
 For the $4\times3$ table in Example 6.1.1, and the independence model, show directly (with-
 out fitting a log-linear model) that $\mu_{11} = 5.780$, $e_{P,11} = 6.747$, and $e_{D,11} = 5.135$.
 
+$e_{P,11}$ - Pearson resdiual 
+
+
+$$
+\begin{aligned}
+e_{P,i} &= w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
+\frac{y_i - \hat{y_i}}{\sqrt{\hat{y_i}}} = \frac{22- 5.780}{\sqrt{5.780}}
+\end{aligned}
+$$
+
+
 ### Task 24
+
+Consider the $2x3$ two-way table $\{y_{ij} ,i = 1,2, j = 1,2,3\}$, with factors A, B. Let the
+deviance for the additive model $A+B$ be D for the $2 × 3$ table, D_1 be for the $2x2$ sub-table
+$\{y_{ij} ,i = 1,2,j = 1,2\}$, and $D_2$ for the $2x2$ table $\{z_{ij} ,i = 1,2,j = 1,2\}$, where 
+$z_{i1} = y_{i1} + y_{i2} , z_{i2} = y_{i3}$ for $i = 1,2$. Verify that $D = D_1 + D_2$. 
+
 
 # 6.7 Flu vaccine data (case(b)) revisited
 
