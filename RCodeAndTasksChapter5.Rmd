@@ -19,9 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 pdf of poisson
 
 $$
-
 \frac {\lambda ^{k}e^{-\lambda }}{k!}
-
 $$
 
 
@@ -43,7 +41,10 @@ plot(AIDS$quarter, log(AIDS$deaths+1))
 
 ```{r}
 glm.lin <- glm(deaths ~ quarter, data=AIDS, family=poisson(link='log'))
+tmp <-summary(glm.lin)
+tmp$deviance
 qchisq(0.95,glm.lin$df.residual)
+qchisq(0.95,glm.lin$df.residual) < tmp$deviance
 
 ```
 
@@ -78,7 +79,7 @@ about both.
 
 An explanation of offset which is brief and clear can be found here (but not in the lecture notes of MAS 6003).
 
-[](http://stats.stackexchange.com/questions/11182/when-to-use-an-offset-in-a-poisson-regression)
+[stack overflow](http://stats.stackexchange.com/questions/11182/when-to-use-an-offset-in-a-poisson-regression)
 
 ## 5.3.1 Example: Smoking and heart disease
 
@@ -118,13 +119,13 @@ $-19.7+0.36x^2-0.02x^2$
 
 for smokers:
 
-$-17.34+0.33x 2 -0.02x 2$
+$-17.34+0.33x^2 -0.02x^2$
 
 
 # 5.4 Non negative data with variance $\propto$ means (Task 17)
 
 Compare the output from fitting a Poisson with log link and a line predictor on x to the
-data in Example 5.2.1 with that obtained using the the log link and assuming that the variance
+data in Example 5.2.1 with that obtained using the log link and assuming that the variance
 is proportional to the mean.
 
 ```{r}
@@ -154,11 +155,23 @@ between 16:00 and 18:00 on weekdays between English cities.
 * $r_{ij}$ number of passengers starting journey between 4 and 6 pm between station i and j
 
 $$
-Po(\mu_{ij}) = \frac{\exp(-\mu_{ij})\mu^{r_{ij}}}{r_{ij}!}
+Po(\mu_{ij}) = \frac{\mu_{ij}^{r_{ij}}\exp(-\mu_{ij})}{r_{ij}!}
 $$
 
 $$
 \mu_{ij} = \alpha_i \exp(\beta n_{ij})
+$$
+
+
+$$
+L(\mu_{ij}) = \prod_i \prod_j \frac{\mu_{ij}^{r_{ij}}\exp(-\mu_{ij})}{r_{ij}!}
+$$
+
+$$
+\begin{aligned}
+l(\mu_{ij}) &= \sum_i \sum_j r_{ij} \log(\mu_{ij}) - (\mu_{ij}) - constant\\
+&= \sum_i \sum_j r_{ij} (\log(\alpha_i) + \beta n_{ij}) - \alpha_i \exp(\beta n_{ij}) - constant
+\end{aligned}
 $$
 
 Models the probablity of having $r_{ij}$ passengers starting journey from station $i$ to station $j$.
@@ -185,7 +198,7 @@ We want to estimate $\alpha_i$ and $\beta$ from the data to estimate $\mu_{ij}$ 
 
 Use the output to determine $\alpha_1$. Hence, show that the parameter estimates $\alpha_i$ and $\beta$ satisfy the first of the mle equations
 $$
-\sum_{j\in D(i)} [r_{ij}/\alpha_i- \exp(\beta n_{ij})] = 0
+\frac{\partial l(\mu_{ij})}{\partial \alpha_i} =  \sum_{j\in D(i)} [r_{ij}/\alpha_i- \exp(\beta n_{ij})] = 0
 $$
 
 ```{r}
@@ -198,6 +211,37 @@ alpha_1 = exp(coefTrain[1])
 alpha_2_3 = exp(coefTrain[1]+coefTrain[2:3])
 alphas <- c(alpha_1,alpha_2_3)
 alphas
-beta = coefTrain[3]
+beta = coefTrain[4]
+beta
 
 ```
+
+
+```{r}
+r1 <- subset(train, S == 1, select=c("C"))
+n1 <- subset(train, S == 1, select = c("P"))
+sum(r1 / alphas[1] - exp(beta * n1))
+
+
+r2 <- subset(train, S == 2, select=c("C"))
+n2 <- subset(train, S == 2, select = c("P"))
+sum(r2 / alphas[2] - exp(beta * n2))
+
+
+r3 <- subset(train, S == 3, select=c("C"))
+n3 <- subset(train, S == 3, select = c("P"))
+sum(r3 / alphas[3] - exp(beta * n3))
+
+```
+
+$$
+\begin{aligned}
+\frac{\partial l(\mu_{ij})}{\partial \beta} &=  (\sum_i \sum_{j \in D(i)} r_{ij} (\log(\alpha_i) + \beta n_{ij}) - \alpha_i \exp(\beta n_{ij}) - constant)'\\
+&=  (\sum_i \sum_{j \in D(i)} r_{ij} \log(\alpha_i) + r_{ij}\beta n_{ij} - \alpha_i \exp(\beta n_{ij}) - constant)'\\
+&=  \sum_i \sum_{j \in D(i)} r_{ij}n_{ij} - n_{ij}\alpha_i \exp(\beta n_{ij})\\
+&= \sum_i \sum_{j \in D(i)} n_{ij}(r_{ij} - \alpha_i \exp(\beta n_{ij})) = 0
+\end{aligned}
+$$
+It can be seen that this sums to 0 since the term $r_{ij} - \alpha_i \exp(\beta n_{ij})$ sums up to zero as we have shown above.
+
+

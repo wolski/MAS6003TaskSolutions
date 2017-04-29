@@ -149,8 +149,13 @@ plot(AIDS$quarter, log(AIDS$deaths+1))</code></pre>
 <div id="fit-poisson-with-log-link" class="section level3">
 <h3>2 fit poisson with log link</h3>
 <pre class="r"><code>glm.lin &lt;- glm(deaths ~ quarter, data=AIDS, family=poisson(link='log'))
-qchisq(0.95,glm.lin$df.residual)</code></pre>
+tmp &lt;-summary(glm.lin)
+tmp$deviance</code></pre>
+<pre><code>## [1] 29.65352</code></pre>
+<pre class="r"><code>qchisq(0.95,glm.lin$df.residual)</code></pre>
 <pre><code>## [1] 21.02607</code></pre>
+<pre class="r"><code>qchisq(0.95,glm.lin$df.residual) &lt; tmp$deviance</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="adding-a-quadratic-term" class="section level3">
 <h3>3 adding a quadratic term</h3>
@@ -224,7 +229,7 @@ summary(glm.logline)</code></pre>
 <div id="adjusting-for-exposure-offset-task-16" class="section level1">
 <h1>5.3 Adjusting for exposure : offset (Task 16)</h1>
 <p>An explanation of offset which is brief and clear can be found here (but not in the lecture notes of MAS 6003).</p>
-<p><a href="http://stats.stackexchange.com/questions/11182/when-to-use-an-offset-in-a-poisson-regression"></a></p>
+<p><a href="http://stats.stackexchange.com/questions/11182/when-to-use-an-offset-in-a-poisson-regression">stack overflow</a></p>
 <div id="example-smoking-and-heart-disease" class="section level2">
 <h2>5.3.1 Example: Smoking and heart disease</h2>
 <div id="death-rates" class="section level3">
@@ -294,13 +299,13 @@ summary(mod.offset)</code></pre>
 <p>With smokers = 1 and 0 for nonsmokers: for non-smokers:</p>
 <p><span class="math inline">\(-19.7+0.36x^2-0.02x^2\)</span></p>
 <p>for smokers:</p>
-<p><span class="math inline">\(-17.34+0.33x 2 -0.02x 2\)</span></p>
+<p><span class="math inline">\(-17.34+0.33x^2 -0.02x^2\)</span></p>
 </div>
 </div>
 </div>
 <div id="non-negative-data-with-variance-propto-means-task-17" class="section level1">
 <h1>5.4 Non negative data with variance <span class="math inline">\(\propto\)</span> means (Task 17)</h1>
-<p>Compare the output from fitting a Poisson with log link and a line predictor on x to the data in Example 5.2.1 with that obtained using the the log link and assuming that the variance is proportional to the mean.</p>
+<p>Compare the output from fitting a Poisson with log link and a line predictor on x to the data in Example 5.2.1 with that obtained using the log link and assuming that the variance is proportional to the mean.</p>
 <pre class="r"><code>glm.lin &lt;- glm(deaths ~ quarter, data=AIDS, family=poisson(link='log'))
 summary(glm.lin)</code></pre>
 <pre><code>## 
@@ -363,10 +368,19 @@ summary(glm.quasi)</code></pre>
 <li><span class="math inline">\(r_{ij}\)</span> number of passengers starting journey between 4 and 6 pm between station i and j</li>
 </ul>
 <p><span class="math display">\[
-Po(\mu_{ij}) = \frac{\exp(-\mu_{ij})\mu^{r_{ij}}}{r_{ij}!}
+Po(\mu_{ij}) = \frac{\mu_{ij}^{r_{ij}}\exp(-\mu_{ij})}{r_{ij}!}
 \]</span></p>
 <p><span class="math display">\[
 \mu_{ij} = \alpha_i \exp(\beta n_{ij})
+\]</span></p>
+<p><span class="math display">\[
+L(\mu_{ij}) = \prod_i \prod_j \frac{\mu_{ij}^{r_{ij}}\exp(-\mu_{ij})}{r_{ij}!}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+l(\mu_{ij}) &amp;= \sum_i \sum_j r_{ij} \log(\mu_{ij}) - (\mu_{ij}) - constant\\
+&amp;= \sum_i \sum_j r_{ij} (\log(\alpha_i) + \beta n_{ij}) - \alpha_i \exp(\beta n_{ij}) - constant
+\end{aligned}
 \]</span></p>
 <p>Models the probablity of having <span class="math inline">\(r_{ij}\)</span> passengers starting journey from station <span class="math inline">\(i\)</span> to station <span class="math inline">\(j\)</span>.</p>
 <ul>
@@ -412,7 +426,7 @@ summary(train.glm)</code></pre>
 <div id="task-18" class="section level2">
 <h2>Task 18</h2>
 <p>Use the output to determine <span class="math inline">\(\alpha_1\)</span>. Hence, show that the parameter estimates <span class="math inline">\(\alpha_i\)</span> and <span class="math inline">\(\beta\)</span> satisfy the first of the mle equations <span class="math display">\[
-\sum_{j\in D(i)} [r_{ij}/\alpha_i- \exp(\beta n_{ij})] = 0
+\frac{\partial l(\mu_{ij})}{\partial \alpha_i} =  \sum_{j\in D(i)} [r_{ij}/\alpha_i- \exp(\beta n_{ij})] = 0
 \]</span></p>
 <pre class="r"><code>coefTrain &lt;- coefficients(train.glm)
 coefTrain</code></pre>
@@ -424,7 +438,30 @@ alphas &lt;- c(alpha_1,alpha_2_3)
 alphas</code></pre>
 <pre><code>## (Intercept)  factor(S)2  factor(S)3 
 ##   1780.6884    836.7556    574.5144</code></pre>
-<pre class="r"><code>beta = coefTrain[3]</code></pre>
+<pre class="r"><code>beta = coefTrain[4]
+beta</code></pre>
+<pre><code>##        P 
+## 1.778818</code></pre>
+<pre class="r"><code>r1 &lt;- subset(train, S == 1, select=c(&quot;C&quot;))
+n1 &lt;- subset(train, S == 1, select = c(&quot;P&quot;))
+sum(r1 / alphas[1] - exp(beta * n1))</code></pre>
+<pre><code>## [1] 1.909584e-14</code></pre>
+<pre class="r"><code>r2 &lt;- subset(train, S == 2, select=c(&quot;C&quot;))
+n2 &lt;- subset(train, S == 2, select = c(&quot;P&quot;))
+sum(r2 / alphas[2] - exp(beta * n2))</code></pre>
+<pre><code>## [1] 2.664535e-15</code></pre>
+<pre class="r"><code>r3 &lt;- subset(train, S == 3, select=c(&quot;C&quot;))
+n3 &lt;- subset(train, S == 3, select = c(&quot;P&quot;))
+sum(r3 / alphas[3] - exp(beta * n3))</code></pre>
+<pre><code>## [1] 3.774758e-15</code></pre>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{\partial l(\mu_{ij})}{\partial \beta} &amp;=  (\sum_i \sum_{j \in D(i)} r_{ij} (\log(\alpha_i) + \beta n_{ij}) - \alpha_i \exp(\beta n_{ij}) - constant)'\\
+&amp;=  (\sum_i \sum_{j \in D(i)} r_{ij} \log(\alpha_i) + r_{ij}\beta n_{ij} - \alpha_i \exp(\beta n_{ij}) - constant)'\\
+&amp;=  \sum_i \sum_{j \in D(i)} r_{ij}n_{ij} - n_{ij}\alpha_i \exp(\beta n_{ij})\\
+&amp;= \sum_i \sum_{j \in D(i)} n_{ij}(r_{ij} - \alpha_i \exp(\beta n_{ij})) = 0
+\end{aligned}
+\]</span> It can be seen that this sums to 0 since the term <span class="math inline">\(r_{ij} - \alpha_i \exp(\beta n_{ij})\)</span> sums up to zero as we have shown above.</p>
 </div>
 </div>
 
