@@ -2,7 +2,9 @@
 title: "R Code And Tasks Chapter 7 (MAS 6003)"
 author: "Witold Wolski"
 date: "December 29, 2016"
-output: pdf_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -25,17 +27,123 @@ rm(list=ls())
 load("data/MAS367-GLMs.RData", envir = e <- new.env())
 
 aspirin <- e$aspirin
-head(aspirin)
 
 dcast(aspirin,type.of.ulcer + ulcer.or.not ~ aspirin.use, value.var = "count")
 ```
 
 ## 7.4.4
 
-* $BC+A$
-* $BC + AB$
-* $BC + AC$
+
+* $BC+A$ 
+
+i - A (aspirin use)
+j - B (ulcer)
+k - C (case control)
+
+$$
+\pi_{ijk} = y_{i..}/n
+$$
+$$
+\mu_{ijk} = n_{jk} y_{i..}/n
+$$
+then
+$$
+\mu_{212} = n_{12} \cdot y_{2..}/n = 68 \cdot 47/250
+$$
+
 
 ```{r}
+(BCA <- glm(count ~ aspirin.use + ulcer.or.not * type.of.ulcer,data=aspirin,family="poisson"))
+matrix(BCA$fitted.values, ncol=2, byrow=T)
+```
+
+* $BC + AB$
+
+$$
+\pi_{ijk} = y_{ij.}/n_j
+$$
+$$
+\mu_{ijk} = n_{jk} \cdot y_{ij.}/n_j
+$$
+then
+$$
+\mu_{212} = n_{.12} \cdot y_{21.}/n_{.1.} = 
+68* (25+6)/(25+6+39+62) = 15.9697
+$$
+
+
+```{r}
+(BCAB <- glm(count ~ aspirin.use*type.of.ulcer + ulcer.or.not * type.of.ulcer,data=aspirin,family="poisson"))
+matrix(BCAB$fitted.values, ncol=2, byrow=T)
+```
+
+
+* $BC + AC$
+
+$$
+\pi_{ijk} = y_{i.k}/n_k
+$$
+
+$$
+\mu_{ijk} =  n_{.jk} \cdot y_{i.k}/n_k
+$$
+
+then
+
+$$
+\mu_{212} = n_{.12} \cdot y_{2.2}/n_{..2} = 
+68* (6+8)/(62 + 53 + 6 + 8) = 7.379845
+$$
+
+```{r}
+(BCAC <- glm(count ~ aspirin.use*ulcer.or.not + ulcer.or.not * type.of.ulcer,data=aspirin,family="poisson"))
+matrix(BCAC$fitted.values, ncol=2, byrow=T)
+```
+
+
+## 7.4.6 Model Selection
+
+
+2.  The row (aspirin user) proportions of $25/ 64 = 0.39$ ($B_1, C_1$), $6/68 = 0.09$ ($B_1, C_2$ ), $8/57 = 0.14$ ($B_2, C_1$ ), $8/61 = 0.13$ ($B_2, C_2$ ), suggest that aspirin usage is different for the gastric ulcer cases ($B_1, C_1$) from the other three categories.
+
+
+4. 
+
+Compare with Deviance with
+
+$$
+\chi^2_{n-p}
+$$
+If model acceptable than deviance should be lower.
+
+```{r}
+qchisq(0.95,BCAC$df.residual)
 
 ```
+
+but all the models have higher deviance.
+
+
+### Task 27 
+Verfiy the analysis in example 7.4.3 (See above)
+
+### Task 28
+
+By fitting the models in R, show that the binomial $(\eta \sim 1)$ analysis gives the same residual deviance (and hence model fit) as the log-linear $(\eta  \sim A + B * C)$ analysis for the ulcer/aspirin data.
+
+
+```{r}
+(BCA <- glm(count ~ aspirin.use + ulcer.or.not * type.of.ulcer,data=aspirin,family="poisson"))
+
+
+
+BCSum <-rep(aggregate(count ~ ulcer.or.not + type.of.ulcer, aspirin, sum )$count,each=2)
+
+props <- aspirin$count / BCSum
+props1 <- props[aspirin$aspirin.use == "user"]
+BCSum <-BCSum[aspirin$aspirin.use == "user"]
+(Binom <- glm(props1 ~ 1,family="binomial", weights = BCSum))
+
+```
+
+The deviances are indeed equal.

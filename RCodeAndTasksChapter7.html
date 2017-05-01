@@ -133,21 +133,13 @@ $(document).ready(function () {
 </ul>
 <div id="example-ulcers-and-aspirin" class="section level2">
 <h2>7.4.3 Example: ulcers and aspirin</h2>
-<pre class="r"><code>library(reshape2)</code></pre>
-<pre><code>## Warning: package 'reshape2' was built under R version 3.3.2</code></pre>
-<pre class="r"><code>rm(list=ls())
+<pre class="r"><code>library(reshape2)
+rm(list=ls())
 load(&quot;data/MAS367-GLMs.RData&quot;, envir = e &lt;- new.env())
 
 aspirin &lt;- e$aspirin
-head(aspirin)</code></pre>
-<pre><code>##   count aspirin.use ulcer.or.not type.of.ulcer
-## 1    39    non.user        cases       gastric
-## 2    25        user        cases       gastric
-## 3    62    non.user     controls       gastric
-## 4     6        user     controls       gastric
-## 5    49    non.user        cases      duodenal
-## 6     8        user        cases      duodenal</code></pre>
-<pre class="r"><code>dcast(aspirin,type.of.ulcer + ulcer.or.not ~ aspirin.use, value.var = &quot;count&quot;)</code></pre>
+
+dcast(aspirin,type.of.ulcer + ulcer.or.not ~ aspirin.use, value.var = &quot;count&quot;)</code></pre>
 <pre><code>##   type.of.ulcer ulcer.or.not user non.user
 ## 1       gastric        cases   25       39
 ## 2       gastric     controls    6       62
@@ -158,9 +150,181 @@ head(aspirin)</code></pre>
 <h2>7.4.4</h2>
 <ul>
 <li><span class="math inline">\(BC+A\)</span></li>
+</ul>
+<p>i - A (aspirin use) j - B (ulcer) k - C (case control)</p>
+<p><span class="math display">\[
+\pi_{ijk} = y_{i..}/n
+\]</span> <span class="math display">\[
+\mu_{ijk} = n_{jk} y_{i..}/n
+\]</span> then <span class="math display">\[
+\mu_{212} = n_{12} \cdot y_{2..}/n = 68 \cdot 47/250
+\]</span></p>
+<pre class="r"><code>(BCA &lt;- glm(count ~ aspirin.use + ulcer.or.not * type.of.ulcer,data=aspirin,family=&quot;poisson&quot;))</code></pre>
+<pre><code>## 
+## Call:  glm(formula = count ~ aspirin.use + ulcer.or.not * type.of.ulcer, 
+##     family = &quot;poisson&quot;, data = aspirin)
+## 
+## Coefficients:
+##                                (Intercept)  
+##                                   2.487570  
+##                        aspirin.usenon.user  
+##                                   1.463058  
+##                       ulcer.or.notcontrols  
+##                                   0.060625  
+##                      type.of.ulcerduodenal  
+##                                  -0.115832  
+## ulcer.or.notcontrols:type.of.ulcerduodenal  
+##                                   0.007198  
+## 
+## Degrees of Freedom: 7 Total (i.e. Null);  3 Residual
+## Null Deviance:       127.7 
+## Residual Deviance: 21.79     AIC: 71.4</code></pre>
+<pre class="r"><code>matrix(BCA$fitted.values, ncol=2, byrow=T)</code></pre>
+<pre><code>##        [,1]   [,2]
+## [1,] 51.968 12.032
+## [2,] 55.216 12.784
+## [3,] 46.284 10.716
+## [4,] 49.532 11.468</code></pre>
+<ul>
 <li><span class="math inline">\(BC + AB\)</span></li>
+</ul>
+<p><span class="math display">\[
+\pi_{ijk} = y_{ij.}/n_j
+\]</span> <span class="math display">\[
+\mu_{ijk} = n_{jk} \cdot y_{ij.}/n_j
+\]</span> then <span class="math display">\[
+\mu_{212} = n_{.12} \cdot y_{21.}/n_{.1.} = 
+68* (25+6)/(25+6+39+62) = 15.9697
+\]</span></p>
+<pre class="r"><code>(BCAB &lt;- glm(count ~ aspirin.use*type.of.ulcer + ulcer.or.not * type.of.ulcer,data=aspirin,family=&quot;poisson&quot;))</code></pre>
+<pre><code>## 
+## Call:  glm(formula = count ~ aspirin.use * type.of.ulcer + ulcer.or.not * 
+##     type.of.ulcer, family = &quot;poisson&quot;, data = aspirin)
+## 
+## Coefficients:
+##                                (Intercept)  
+##                                   2.710068  
+##                        aspirin.usenon.user  
+##                                   1.181133  
+##                      type.of.ulcerduodenal  
+##                                  -0.665113  
+##                       ulcer.or.notcontrols  
+##                                   0.060625  
+##  aspirin.usenon.user:type.of.ulcerduodenal  
+##                                   0.671251  
+## type.of.ulcerduodenal:ulcer.or.notcontrols  
+##                                   0.007198  
+## 
+## Degrees of Freedom: 7 Total (i.e. Null);  2 Residual
+## Null Deviance:       127.7 
+## Residual Deviance: 17.7  AIC: 69.31</code></pre>
+<pre class="r"><code>matrix(BCAB$fitted.values, ncol=2, byrow=T)</code></pre>
+<pre><code>##          [,1]      [,2]
+## [1,] 48.96970 15.030303
+## [2,] 52.03030 15.969697
+## [3,] 49.27119  7.728814
+## [4,] 52.72881  8.271186</code></pre>
+<ul>
 <li><span class="math inline">\(BC + AC\)</span></li>
 </ul>
+<p><span class="math display">\[
+\pi_{ijk} = y_{i.k}/n_k
+\]</span></p>
+<p><span class="math display">\[
+\mu_{ijk} =  n_{.jk} \cdot y_{i.k}/n_k
+\]</span></p>
+<p>then</p>
+<p><span class="math display">\[
+\mu_{212} = n_{.12} \cdot y_{2.2}/n_{..2} = 
+68* (6+8)/(62 + 53 + 6 + 8) = 7.379845
+\]</span></p>
+<pre class="r"><code>(BCAC &lt;- glm(count ~ aspirin.use*ulcer.or.not + ulcer.or.not * type.of.ulcer,data=aspirin,family=&quot;poisson&quot;))</code></pre>
+<pre><code>## 
+## Call:  glm(formula = count ~ aspirin.use * ulcer.or.not + ulcer.or.not * 
+##     type.of.ulcer, family = &quot;poisson&quot;, data = aspirin)
+## 
+## Coefficients:
+##                                (Intercept)  
+##                                   2.859600  
+##                        aspirin.usenon.user  
+##                                   0.980829  
+##                       ulcer.or.notcontrols  
+##                                  -0.860847  
+##                      type.of.ulcerduodenal  
+##                                  -0.115832  
+##   aspirin.usenon.user:ulcer.or.notcontrols  
+##                                   1.125046  
+## ulcer.or.notcontrols:type.of.ulcerduodenal  
+##                                   0.007198  
+## 
+## Degrees of Freedom: 7 Total (i.e. Null);  2 Residual
+## Null Deviance:       127.7 
+## Residual Deviance: 10.54     AIC: 62.15</code></pre>
+<pre class="r"><code>matrix(BCAC$fitted.values, ncol=2, byrow=T)</code></pre>
+<pre><code>##          [,1]      [,2]
+## [1,] 46.54545 17.454545
+## [2,] 60.62016  7.379845
+## [3,] 41.45455 15.545455
+## [4,] 54.37984  6.620155</code></pre>
+</div>
+<div id="model-selection" class="section level2">
+<h2>7.4.6 Model Selection</h2>
+<ol start="2" style="list-style-type: decimal">
+<li><p>The row (aspirin user) proportions of <span class="math inline">\(25/ 64 = 0.39\)</span> (<span class="math inline">\(B_1, C_1\)</span>), <span class="math inline">\(6/68 = 0.09\)</span> (<span class="math inline">\(B_1, C_2\)</span> ), <span class="math inline">\(8/57 = 0.14\)</span> (<span class="math inline">\(B_2, C_1\)</span> ), <span class="math inline">\(8/61 = 0.13\)</span> (<span class="math inline">\(B_2, C_2\)</span> ), suggest that aspirin usage is different for the gastric ulcer cases (<span class="math inline">\(B_1, C_1\)</span>) from the other three categories.</p></li>
+<li></li>
+</ol>
+<p>Compare with Deviance with</p>
+<p><span class="math display">\[
+\chi^2_{n-p}
+\]</span> If model acceptable than deviance should be lower.</p>
+<pre class="r"><code>qchisq(0.95,BCAC$df.residual)</code></pre>
+<pre><code>## [1] 5.991465</code></pre>
+<p>but all the models have higher deviance.</p>
+<div id="task-27" class="section level3">
+<h3>Task 27</h3>
+<p>Verfiy the analysis in example 7.4.3 (See above)</p>
+</div>
+<div id="task-28" class="section level3">
+<h3>Task 28</h3>
+<p>By fitting the models in R, show that the binomial <span class="math inline">\((\eta \sim 1)\)</span> analysis gives the same residual deviance (and hence model fit) as the log-linear <span class="math inline">\((\eta \sim A + B * C)\)</span> analysis for the ulcer/aspirin data.</p>
+<pre class="r"><code>(BCA &lt;- glm(count ~ aspirin.use + ulcer.or.not * type.of.ulcer,data=aspirin,family=&quot;poisson&quot;))</code></pre>
+<pre><code>## 
+## Call:  glm(formula = count ~ aspirin.use + ulcer.or.not * type.of.ulcer, 
+##     family = &quot;poisson&quot;, data = aspirin)
+## 
+## Coefficients:
+##                                (Intercept)  
+##                                   2.487570  
+##                        aspirin.usenon.user  
+##                                   1.463058  
+##                       ulcer.or.notcontrols  
+##                                   0.060625  
+##                      type.of.ulcerduodenal  
+##                                  -0.115832  
+## ulcer.or.notcontrols:type.of.ulcerduodenal  
+##                                   0.007198  
+## 
+## Degrees of Freedom: 7 Total (i.e. Null);  3 Residual
+## Null Deviance:       127.7 
+## Residual Deviance: 21.79     AIC: 71.4</code></pre>
+<pre class="r"><code>BCSum &lt;-rep(aggregate(count ~ ulcer.or.not + type.of.ulcer, aspirin, sum )$count,each=2)
+
+props &lt;- aspirin$count / BCSum
+props1 &lt;- props[aspirin$aspirin.use == &quot;user&quot;]
+BCSum &lt;-BCSum[aspirin$aspirin.use == &quot;user&quot;]
+(Binom &lt;- glm(props1 ~ 1,family=&quot;binomial&quot;, weights = BCSum))</code></pre>
+<pre><code>## 
+## Call:  glm(formula = props1 ~ 1, family = &quot;binomial&quot;, weights = BCSum)
+## 
+## Coefficients:
+## (Intercept)  
+##      -1.463  
+## 
+## Degrees of Freedom: 3 Total (i.e. Null);  3 Residual
+## Null Deviance:       21.79 
+## Residual Deviance: 21.79     AIC: 39.51</code></pre>
+<p>The deviances are indeed equal.</p>
+</div>
 </div>
 </div>
 

@@ -282,6 +282,13 @@ e_{P,i} &= w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
 &= \frac{y_i - \hat{y_i}}{\sqrt{\hat{y_i}}} = \frac{22- 5.780}{\sqrt{5.780}}
 \end{aligned}
 $$
+```{r}
+y <- 22
+mu <- 5.78
+(y- mu)/sqrt(mu)
+
+```
+
 For poisson distribution. For other distributions, see Taks 9.
 
 $e_{D,11}$ - Deviance residual.
@@ -300,10 +307,12 @@ sign(y-mu) * (sqrt(2* (y*log(y/mu) - (y-mu))))
 ```
 ### Task 24
 
-Consider the $2x3$ two-way table $\{y_{ij} ,i = 1,2, j = 1,2,3\}$, with factors A, B. Let the
-deviance for the additive model $A+B$ be D for the $2 × 3$ table, D_1 be for the $2x2$ sub-table
-$\{y_{ij} ,i = 1,2,j = 1,2\}$, and $D_2$ for the $2x2$ table $\{z_{ij} ,i = 1,2,j = 1,2\}$, where 
-$z_{i1} = y_{i1} + y_{i2} , z_{i2} = y_{i3}$ for $i = 1,2$. Verify that $D = D_1 + D_2$. 
+Consider the $2 \times 3$ two-way table $\{y_{ij} ,i = 1,2, j = 1,2,3\}$, with factors A, B. Let the
+deviance for the additive model $A+B$ be $D$ for the $2 × 3$ table, $D_1$ be for the $2\times2$ sub-table
+$\{y_{ij} ,i = 1,2,j = 1,2\}$, and $D_2$ for the $2\times2$ table $\{z_{ij} ,i = 1,2,j = 1,2\}$, where 
+$z_{i1} = y_{i1} + y_{i2} , z_{i2} = y_{i3}$ for $i = 1,2$. 
+
+Verify that $D = D_1 + D_2$. 
 
 
 # 6.7 Flu vaccine data (case(b)) revisited
@@ -330,11 +339,11 @@ head(vaccine)
 glm.homo <- glm(count ~ response + treatment , family = poisson(log), data=vaccine)
 glm.homo$df.residual
 glm.homo$deviance
-qchisq(0.95,4)
+qchisq(0.95,2)
 
 ```
 
-* not much of an improvement on 2 degrees of freedom
+* $\Delta D$ on 2 degrees of freedom not much of an improvement (no significant difference)
 
 ```{r}
 glm.min$deviance - glm.homo$deviance
@@ -355,6 +364,16 @@ interaction.plot(treatment, response, log(count),las=2)
 })
 
 ```
+
+
 ### Task 25 verify analysis in Example 6.7
+See above
 
 ### Task 26 What is the largest pearson residual for the A+B model?
+
+```{r}
+pearsonResid <- residuals(glm.homo, type="pearson")
+pearsonResid
+which.max(abs(pearsonResid))
+
+```
