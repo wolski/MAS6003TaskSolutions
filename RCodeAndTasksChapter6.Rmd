@@ -3,8 +3,8 @@ title: "R Code And Tasks Chapter 6 (MAS 6003)"
 author: "Witold Wolski"
 date: "December 28, 2016"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -279,11 +279,25 @@ $e_{P,11}$ - Pearson resdiual
 $$
 \begin{aligned}
 e_{P,i} &= w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
-\frac{y_i - \hat{y_i}}{\sqrt{\hat{y_i}}} = \frac{22- 5.780}{\sqrt{5.780}}
+&= \frac{y_i - \hat{y_i}}{\sqrt{\hat{y_i}}} = \frac{22- 5.780}{\sqrt{5.780}}
 \end{aligned}
 $$
+For poisson distribution. For other distributions, see Taks 9.
 
+$e_{D,11}$ - Deviance residual.
 
+The i'th deviance residual is defined by 
+$$
+e_{D,i} = sign(y_i - \hat{y_i}) \times \sqrt{d_i}
+$$
+$$
+d_i = 2\times \{y_i \log(\frac{y_i}{\mu_i}) - (y_i - \mu_i)\}
+$$
+```{r}
+y <- 22
+mu <- 5.78
+sign(y-mu) * (sqrt(2* (y*log(y/mu) - (y-mu))))
+```
 ### Task 24
 
 Consider the $2x3$ two-way table $\{y_{ij} ,i = 1,2, j = 1,2,3\}$, with factors A, B. Let the

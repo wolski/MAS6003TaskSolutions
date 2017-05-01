@@ -259,7 +259,21 @@ matrix(glm.sat$fitted.values,ncol=3)</code></pre>
 <li><span class="math inline">\(A + B\)</span> :independence</li>
 </ul>
 <pre class="r"><code>glm.indep &lt;- glm(number ~ factor(tumour.type) + factor(site), family = poisson(log), data=Mela)
-matrix(glm.indep$fitted.values,ncol=3)</code></pre>
+glm.indep</code></pre>
+<pre><code>## 
+## Call:  glm(formula = number ~ factor(tumour.type) + factor(site), family = poisson(log), 
+##     data = Mela)
+## 
+## Coefficients:
+##             (Intercept)     factor(tumour.type)B     factor(tumour.type)C  
+##                  1.7544                   1.6940                   1.3020  
+##    factor(tumour.type)D        factor(site)Trunk  factor(site)Extremities  
+##                  0.4990                   0.4439                   1.2010  
+## 
+## Degrees of Freedom: 11 Total (i.e. Null);  6 Residual
+## Null Deviance:       295.2 
+## Residual Deviance: 51.8  AIC: 122.9</code></pre>
+<pre class="r"><code>matrix(glm.indep$fitted.values,ncol=3)</code></pre>
 <pre><code>##       [,1]   [,2]    [,3]
 ## [1,]  5.78  9.010  19.210
 ## [2,] 31.45 49.025 104.525
@@ -472,6 +486,23 @@ glm.indepNoHead</code></pre>
 <div id="task-23" class="section level3">
 <h3>Task 23</h3>
 <p>For the <span class="math inline">\(4\times3\)</span> table in Example 6.1.1, and the independence model, show directly (with- out fitting a log-linear model) that <span class="math inline">\(\mu_{11} = 5.780\)</span>, <span class="math inline">\(e_{P,11} = 6.747\)</span>, and <span class="math inline">\(e_{D,11} = 5.135\)</span>.</p>
+<p><span class="math inline">\(e_{P,11}\)</span> - Pearson resdiual</p>
+<p><span class="math display">\[
+\begin{aligned}
+e_{P,i} &amp;= w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
+&amp;= \frac{y_i - \hat{y_i}}{\sqrt{\hat{y_i}}} = \frac{22- 5.780}{\sqrt{5.780}}
+\end{aligned}
+\]</span> For poisson distribution. For other distributions, see Taks 9.</p>
+<p><span class="math inline">\(e_{D,11}\)</span> - Deviance residual.</p>
+<p>The i’th deviance residual is defined by <span class="math display">\[
+e_{D,i} = sign(y_i - \hat{y_i}) \times \sqrt{d_i}
+\]</span> <span class="math display">\[
+d_i = 2\times \{y_i \log(\frac{y_i}{\mu_i}) - (y_i - \mu_i)\}
+\]</span></p>
+<pre class="r"><code>y &lt;- 22
+mu &lt;- 5.78
+sign(y-mu) * (sqrt(2* (y*log(y/mu) - (y-mu))))</code></pre>
+<pre><code>## [1] 5.135378</code></pre>
 </div>
 <div id="task-24" class="section level3">
 <h3>Task 24</h3>

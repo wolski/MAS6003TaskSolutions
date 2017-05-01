@@ -3,8 +3,8 @@ title: "Task Solution Chapter 3"
 author: "Witold Wolski"
 date: "December 3, 2016"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -329,7 +329,7 @@ Obtain the form of the __Pearson residual__ for the Binomial, Poisson and Gamma.
 are given in Chapters 4 and 5)
 
 $$
-e_{P,i} &= w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
+e_{P,i} = w_i\frac{y_i - \hat{y_i}}{\sqrt{V(\hat{\mu_i)}}} \\
 $$
 
 
@@ -367,7 +367,7 @@ $$
 than
 
 $$
-e_{p,i} = \frac{y_i - \mu_i}{sqrt{\phi} \mu_i}
+e_{p,i} = \frac{y_i - \mu_i}{\sqrt{\phi} \mu_i}
 $$
 
 
