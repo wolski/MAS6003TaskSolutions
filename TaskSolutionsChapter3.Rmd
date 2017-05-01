@@ -3,8 +3,8 @@ title: "Task Solution Chapter 3"
 author: "Witold Wolski"
 date: "December 3, 2016"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
