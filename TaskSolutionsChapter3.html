@@ -125,7 +125,7 @@ $(document).ready(function () {
 
 <div id="task-1" class="section level2">
 <h2>Task 1</h2>
-<p>verify formula for <span class="math inline">\(var(Y)\)</span></p>
+<p>Verify formula for <span class="math inline">\(var(Y)\)</span></p>
 <p><span class="math display">\[
 var(Y) = \frac{\phi}{w} b''(\theta)
 \]</span></p>
@@ -227,27 +227,22 @@ b'(\theta) = -1/\theta \rightarrow \mu = -1/\theta \rightarrow \theta = g(\mu) =
 <div id="task-4" class="section level1">
 <h1>Task 4</h1>
 <p>For the canonical link (see, in particular, equation (3.10)) show that</p>
-<p><span class="math display">\[
-\begin{aligned}
+$$
+<span class="math display">\[\begin{aligned}
 \frac{\partial^2 l}{\partial \beta_j \partial \beta_k} &amp;= \\
 &amp;= \frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - b(\theta_i)] \}) \\
-&amp;= \frac{1}{\phi} \sum_i \{-x_{ij}w_ih'(x^T_i\beta)x_{ik}\}
-\end{aligned}
-\]</span></p>
-<p>Hint :</p>
+&amp;= \frac{1}{\phi} \sum_i w_i \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}\{[y_i\theta_i - b(\theta_i)] \}
+\end{aligned}\]</span>
+<p>$$</p>
 <p><span class="math display">\[
-\sum w_i y_i \frac{\partial \theta}{\partial \beta} = \sum w_i \frac{\partial b(\theta)}{\partial \beta}
+\frac{\partial^2 y_i\theta_i}{\partial \beta_j \partial \beta_k} =  \frac{\partial^2 y_ix_i^T\beta}{\partial \beta_j \partial \beta_k} = 0
 \]</span></p>
 <p><span class="math display">\[
-b'(\theta) = h(x^T \beta) \rightarrow b(\theta) = \int h(x^T\beta) + C
-\]</span></p>
-<p>than:</p>
-<p><span class="math display">\[
-\begin{aligned}
-&amp;=\frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - b(\theta_i)] \}) \\
-&amp;=\frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - (\int h(x^T\beta) + C)] \})
-\end{aligned}
-\]</span></p>
+\frac{\partial^2 b(\theta_i)}{\partial \beta_j \partial \beta_k} =  \frac{\partial^2 b(\theta_i)}{\partial \theta_i^2}\frac{\partial^2 x_i^T \beta}{\partial \beta_j}\frac{\partial^2 x_i^T \beta}{\partial \beta_k} + 0 = b''(x_i^T\beta)x_{ij}x_{ik} = h'(x_i^T\beta)x_{ij}x_{ik}
+\]</span> with chain rule of differentiation and <span class="math inline">\(b'(x_i^T \beta) = h(x_i^T\beta)\)</span>.</p>
+<p>Plugging this into Equation 1:</p>
+<p>$$  &amp;=  <em>i {-x</em>{ij}w_ih’(x^T_i)x_{ik}}</p>
+<p>$$</p>
 </div>
 <div id="task-5" class="section level1">
 <h1>Task 5</h1>

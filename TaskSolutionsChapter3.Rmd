@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Task 1
 
-verify formula for $var(Y)$
+Verify formula for $var(Y)$
 
 $$
 var(Y) = \frac{\phi}{w} b''(\theta)
@@ -149,35 +149,27 @@ For the canonical link (see, in particular, equation (3.10)) show that
 
 $$
 \begin{aligned}
-\frac{\partial^2 l}{\partial \beta_j \partial \beta_k} &= \\
-&= \frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - b(\theta_i)] \}) \\
-&= \frac{1}{\phi} \sum_i \{-x_{ij}w_ih'(x^T_i\beta)x_{ik}\}
+\frac{\partial^2 l}{\partial \beta_j \partial \beta_k} &= \frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - b(\theta_i)] \}) \\
+&= \frac{1}{\phi} \sum_i w_i \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}\{[y_i\theta_i - b(\theta_i)] \}
 \end{aligned}
-$$
-
-
-
-Hint :
 
 $$
-\sum w_i y_i \frac{\partial \theta}{\partial \beta} = \sum w_i \frac{\partial b(\theta)}{\partial \beta}
-$$
-
 
 $$
-b'(\theta) = h(x^T \beta) \rightarrow b(\theta) = \int h(x^T\beta) + C
+\frac{\partial^2 y_i\theta_i}{\partial \beta_j \partial \beta_k} =  \frac{\partial^2 y_ix_i^T\beta}{\partial \beta_j \partial \beta_k} = 0
 $$
 
-than:
+$$
+\frac{\partial^2 b(\theta_i)}{\partial \beta_j \partial \beta_k} =  \frac{\partial^2 b(\theta_i)}{\partial \theta_i^2}\frac{\partial^2 x_i^T \beta}{\partial \beta_j}\frac{\partial^2 x_i^T \beta}{\partial \beta_k} + 0 = b''(x_i^T\beta)x_{ij}x_{ik} = h'(x_i^T\beta)x_{ij}x_{ik}
+$$
+with chain rule of differentiation and $b'(x_i^T \beta) = h(x_i^T\beta)$.
 
+Plugging this into Equation 1:
 
 $$
-\begin{aligned}
-&=\frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - b(\theta_i)] \}) \\
-&=\frac{1}{\phi} \frac{\partial^2 l}{\partial \beta_j \partial \beta_k}(\sum_i \{w_i[y_i\theta_i - (\int h(x^T\beta) + C)] \})
-\end{aligned}
-$$
+\frac{\partial^2 l}{\partial \beta_j \partial \beta_k} &= \frac{1}{\phi} \sum_i \{-x_{ij}w_ih'(x^T_i\beta)x_{ik}\}
 
+$$
 
 # Task 5
 
